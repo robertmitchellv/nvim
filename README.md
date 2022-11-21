@@ -10,6 +10,43 @@
 
 This is a WIP based on a set up that really impressed me. 
 
+## Geting started
+
+### Install neovim
+
+This _should_ be installed from the script run earlier in the `dotfiles` repo, but if it's not grab
+from the neovim [releases](https://github.com/neovim/neovim/releases) page:
+
+Currently I'm using `Pop!_OS`, and the version of neovim from `apt` isn't recent enough, so for
+linux we'll need to grab it from the repo releases page.
+
+__linux__
+```bash
+gh --repo neovim/neovim release download stable --pattern='*.deb'
+sudo apt install ./nvim-linux64.deb
+```
+
+On the macbook pro; can use `homebrew`
+
+__macOS__
+```bash
+brew install nvim
+```
+
+### Clone the repo
+
+Using the GitHub CLI
+
+First make to authenticate
+
+```bash
+gh auth login
+```
+
+```bash
+gh repo clone robertmitchellv/nvim ~/.config/nvim
+```
+
 ## What is Cosynvim
 
 > [Cosynvim](https://github.com/glepnir/cosynvim) wants vimers to have their own config with high performance fast speed and modernity.
