@@ -1,52 +1,18 @@
-<h1 align="center">
-  <img
-    src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
-    height="30"
-    width="0px"
-  />
-  Cosynvim
-  <img
-    src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
-    height="30"
-    width="0px"
-  />
-</h1>
+# My neovim set up
 
-<p align="center">
-  <a href="https://github.com/glepnir/cosynvim/stargazers">
-    <img
-      alt="Stargazers"
-      src="https://img.shields.io/github/stars/glepnir/cosynvim?style=for-the-badge&logo=starship&color=c678dd&logoColor=d9e0ee&labelColor=282a36"
-    />
-  </a>
-  <a href="https://github.com/glepnir/cosynvim/issues">
-    <img
-      alt="Issues"
-      src="https://img.shields.io/github/issues/glepnir/cosynvim?style=for-the-badge&logo=gitbook&color=f0c062&logoColor=d9e0ee&labelColor=282a36"
-    />
-  </a>
-  <a href="https://github.com/glepnir/cosynvim/contributors">
-    <img
-      alt="Contributors"
-      src="https://img.shields.io/github/contributors/glepnir/cosynvim?style=for-the-badge&logo=opensourceinitiative&color=abcf84&logoColor=d9e0ee&labelColor=282a36"
-    />
-  </a>
-</p>
+<div align="center">
+  <p>
+    <img title="neovim!" height="65px" width="65px" hspace=10 src="https://cdn.simpleicons.org/neovim/6062ba" />
+  </p>
+</div>
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/41671631/176990490-aeb6111b-41ea-4767-bc03-c0aee4774a4e.png"
-  height = "40%"
-  widht = "40%"
-  />
-</p>
+<br>
+
+This is a WIP based on a set up that really impressed me. 
 
 ## What is Cosynvim
 
-Many people are interested in my [personal configuration](https://github.com/glepnir/nvim). So I created Cosynvim.
-
-What does Cosynvim do? Cosynvim wants vimers to have their own config with high performance
-
-fast speed and modernity.
+> [Cosynvim](https://github.com/glepnir/cosynvim) wants vimers to have their own config with high performance fast speed and modernity.
 
 ## Structure
 
@@ -82,20 +48,6 @@ fast speed and modernity.
     └── neovim.cat
 
 ```
-
-A nice structure right ? Looks complicated ? You can delete any folder except core and keymap modules. The
-
-rule of `modules` is you can delete folders in modules. And create folder with your favorite name, but you must
-
-create `plugins.lua` and register your plugins in this file by using cosynvim api.
-
-## Usage
-
-- Click button `Use this template` It will genereate a new repo based on cosy on your github
-
-- Then you need input repo name, Give your nvim configuration a nice name
-
-- Enjoy
 
 ### How to install plugins
 
@@ -218,11 +170,5 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 10
 linux
 xset r rate 210 40
 ```
-
-## Donate
-
-[![](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/bobbyhub)
-
-If you'd like to support my work financially, buy me a drink through [paypal](https://paypal.me/bobbyhub)
 
 ## Licenese MIT
