@@ -12,5 +12,6 @@ plugin({
   requires = {
     { 'nvim-lua/plenary.nvim', opt = true },
     { 'nvim-telescope/telescope-fzy-native.nvim', opt = true },
+    { 'nvim-telescope/telescope-file-browser.nvim', opt = true },
   },
 })

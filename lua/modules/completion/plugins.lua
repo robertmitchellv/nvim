@@ -9,7 +9,7 @@ plugin({
   'neovim/nvim-lspconfig',
   -- used filetype to lazyload lsp
   -- config your language filetype in here
-  ft = { 'lua', 'rust', 'c', 'cpp' },
+  ft = { 'R', 'Rmd', 'qmd', 'py', 'ipynb', 'md', 'lua', 'rust', 'c', 'cpp' },
   config = conf.nvim_lsp,
 })
 

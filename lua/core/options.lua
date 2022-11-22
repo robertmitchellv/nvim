@@ -1,9 +1,19 @@
 -- author: glepnr https://github.com/glepnir
 -- date: 2022-07-02
 -- License: MIT
+
 local opt = vim.opt
 local cache_dir = require('core.helper').get_cache_path()
 
+-- my options
+opt.relativenumber = true
+opt.softtabstop = 2
+opt.smartindent = true
+opt.cursorline = true
+opt.background = "dark"
+opt.iskeyword:append("-")
+
+-- cosynvim options
 opt.termguicolors = true
 opt.hidden = true
 opt.magic = true
@@ -67,7 +77,7 @@ opt.foldmethod = 'marker'
 
 opt.number = true
 opt.signcolumn = 'yes'
-opt.spelloptions = 'camel'
+--opt.spelloptions = 'camel'
 
 opt.textwidth = 100
 opt.colorcolumn = '100'
@@ -87,6 +97,6 @@ if vim.loop.os_uname().sysname == 'Darwin' then
     },
     cache_enabled = 0,
   }
-  vim.g.python_host_prog = '/usr/bin/python'
-  vim.g.python3_host_prog = '/usr/local/bin/python3'
+  --vim.g.python_host_prog = '/usr/bin/python'
+  --vim.g.python3_host_prog = '/usr/local/bin/python3'
 end
