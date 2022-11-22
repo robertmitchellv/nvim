@@ -4,12 +4,25 @@
 
 local config = {}
 
-function config.zephyr()
-  vim.cmd('colorscheme zephyr')
+function config.tokyonight()
+  vim.cmd("colorscheme tokyonight")
+
+  local tokyo = require("tokyonight")
+  tokyo.setup({
+    style = "storm",
+    transparent = false,
+    terminal_colors = true,
+    styles = {
+      comments = { italic = true },
+      keywords = { italic = false },
+      sidebars = "dark",
+      floats = "dark"
+    }
+  })
 end
 
 function config.galaxyline()
-  require('modules.ui.eviline')
+  require("modules.ui.rbmvline")
 end
 
 function config.dashboard()
@@ -34,16 +47,6 @@ function config.dashboard()
       shortcut = 'SPC f f',
     },
   }
-end
-
-function config.nvim_bufferline()
-  require('bufferline').setup({
-    options = {
-      modified_icon = '✥',
-      buffer_close_icon = '',
-      always_show_bufferline = false,
-    },
-  })
 end
 
 function config.nvim_tree()

@@ -2,25 +2,33 @@
 -- date: 2022-07-02
 -- License: MIT
 
-local plugin = require('core.pack').register_plugin
-local conf = require('modules.ui.config')
+local plugin = require("core.pack").register_plugin
+local conf = require("modules.ui.config")
 
-plugin({ 'glepnir/zephyr-nvim', config = conf.zephyr })
+plugin({ "folke/tokyonight.nvim", config = conf.tokyonight })
 
-plugin({ 'glepnir/dashboard-nvim', config = conf.dashboard })
+plugin({ "glepnir/dashboard-nvim", config = conf.dashboard })
 
+-- require devicons here
 plugin({
-  'glepnir/galaxyline.nvim',
-  branch = 'main',
-  config = conf.galaxyline,
-  requires = 'kyazdani42/nvim-web-devicons',
-})
-
-plugin({
-  'kyazdani42/nvim-tree.lua',
-  cmd = 'NvimTreeToggle',
+  "nvim-tree/nvim-tree.lua",
   config = conf.nvim_tree,
-  requires = 'kyazdani42/nvim-web-devicons',
+  requires = {"nvim-tree/nvim-web-devicons",
+  },
+  tag = "nightly"
 })
 
-plugin({ 'akinsho/nvim-bufferline.lua', config = conf.nvim_bufferline, requires = 'kyazdani42/nvim-web-devicons' })
+-- use wants devicons below
+plugin({
+  "glepnir/galaxyline.nvim",
+  branch = "main",
+  config = conf.galaxyline,
+  wants = "nvim-tree/nvim-web-devicons",
+})
+
+plugin({ 
+  "romgrk/barbar.nvim", 
+  config = conf.barbar, 
+  wants = "nvim-web-devicons" 
+})
+
