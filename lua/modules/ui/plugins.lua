@@ -32,3 +32,22 @@ plugin({
   wants = "nvim-web-devicons" 
 })
 
+plugin({ 
+  "lewis6991/gitsigns.nvim",
+  config = conf.gitsigns, 
+})
+
+plugin({ 
+  "kevinhwang91/nvim-hlslens",
+  config = conf.hlslens, 
+})
+
+plugin({ 
+  "petertriho/nvim-scrollbar", 
+  config = conf.scrollbar,
+  wants = {
+    "gitsigns",
+    "hlslens"
+  }
+})
+

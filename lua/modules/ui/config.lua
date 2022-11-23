@@ -57,4 +57,18 @@ function config.nvim_tree()
   })
 end
 
+function config.scrollbar()
+  require("modules.ui.scrollbar")
+end
+
+function config.gitsigns()
+  require("gitsigns").setup()
+  require("scrollbar.handlers.gitsigns").setup()
+end
+
+function config.hlslens()
+  -- require("hlslens").setup() is not required
+  require("scrollbar.handlers.search").setup()
+end
+
 return config
