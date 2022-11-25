@@ -10,6 +10,7 @@ plugin({
   cmd = 'Telescope',
   config = conf.telescope,
   requires = {
+    { 'nvim-lua/popup.nvim', opt = true },
     { 'nvim-lua/plenary.nvim', opt = true },
     { 'nvim-telescope/telescope-fzy-native.nvim', opt = true },
     { 'nvim-telescope/telescope-file-browser.nvim', opt = true },
