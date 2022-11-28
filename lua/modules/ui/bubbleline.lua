@@ -9,7 +9,7 @@ if not status_galaxy then
 end
 local condition = require("galaxyline.condition")
 local gls = galaxyline.section
-galaxyline.short_line_list = { "NvimTree", "vista", "dbui", "packer"}
+galaxyline.short_line_list = { "NvimTree", "vista", "dbui", "packer", "lspsagaoutline" }
 
 -- --> load tokyonight colors and utils
 local status_tokyo, tokyo_colors = pcall(require, "tokyonight.colors")
@@ -26,7 +26,7 @@ local icons = {
   right_bar =     " ▊",
   left_bubble =   "",
 	right_bubble =  "",
-  status_icon =   "  ",
+  status_left =   "  ",
   git =           "    ",
   branch =        "   ",
   add =           "  ",
@@ -37,6 +37,7 @@ local icons = {
   warn =          "  ",
   hint =          "  ",
   info =          "  ",
+  status_right =   "  ",
 }
 
 -- </> custom colors for git info
@@ -64,9 +65,9 @@ colors.galaxy.hint_bg =         util.blend(colors.hint, colors.bg, .5)
 colors.galaxy.hint_fg =         util.blend(colors.fg, colors.galaxy.hint_bg, .8)
 colors.galaxy.info_bg =         util.blend(colors.info, colors.bg, .5)
 colors.galaxy.info_fg =         util.blend(colors.fg, colors.galaxy.info_bg, .8)
-colors.galaxy.encoding_bg =     util.blend(colors.blue0, colors.bg, .5)
+colors.galaxy.encoding_bg =     util.blend(colors.blue, colors.bg, .5)
 colors.galaxy.encoding_fg =     util.blend(colors.fg, colors.galaxy.encoding_bg, .8)
-colors.galaxy.format_bg =       util.blend(colors.blue1, colors.bg, .5)
+colors.galaxy.format_bg =       util.blend(colors.blue, colors.bg, .8)
 colors.galaxy.format_fg =       util.blend(colors.fg, colors.galaxy.format_bg, .8)
 
 -- </> util functions
@@ -115,6 +116,7 @@ function HideDashboard()
 end
 
 -- </> the status line
+-- condition -> highlight -> icon -> provider -> separator -> separator_highlight
 -- --> left
 local index = 1
 gls.left[index] = {
@@ -133,7 +135,7 @@ gls.left[index] = {
     provider = function()
       local cmd = ModeColor("GalaxyViMode", colors.bg_statusline)
       vim.api.nvim_command(cmd)
-      return icons.status_icon
+      return icons.status_left
     end,
   },
 }
@@ -141,308 +143,267 @@ gls.left[index] = {
 index = index + 1
 gls.left[index] = {
   BranchBubbleLeft = {
+    condition = condition.check_git_workspace,
+    highlight = { colors.galaxy.git_icon_bg, colors.bg_statusline },
     provider = function()
       return icons.left_bubble
     end,
-    highlight = { colors.galaxy.git_icon_bg, colors.bg_statusline },
-    condition = condition.check_git_workspace,
   },
 }
 
 index = index + 1
 gls.left[index] = {
   GitIcon = {
+    condition = condition.check_git_workspace,
+    highlight = { colors.galaxy.git_icon_fg, colors.galaxy.git_icon_bg },
     provider = function()
       return icons.git
     end,
-    highlight = { colors.galaxy.git_icon_fg, colors.galaxy.git_icon_bg },
     separator = icons.right_bubble,
     separator_highlight = { colors.galaxy.git_icon_bg, colors.galaxy.branch_bg },
-    condition = condition.check_git_workspace,
   },
 }
 
 index = index + 1
 gls.left[index] = {
   GitIconBranch = {
+    condition = condition.check_git_workspace,
+    highlight = { colors.galaxy.branch_fg, colors.galaxy.branch_bg },
     provider = function()
       return icons.branch
     end,
-    highlight = { colors.galaxy.branch_fg, colors.galaxy.branch_bg },
-    condition = condition.check_git_workspace,
   },
 }
 
 index = index + 1
 gls.left[index] = {
   GitBranch = {
-    provider = "GitBranch",
+    condition = condition.check_git_workspace,
     highlight = { colors.galaxy.branch_fg, colors.galaxy.branch_bg },
+    provider = "GitBranch",
     separator = icons.right_bubble,
     separator_highlight = { colors.galaxy.branch_bg, colors.galaxy.add_bg },
-    condition = condition.check_git_workspace,
   },
 }
 
 index = index + 1
 gls.left[index] = {
   DiffAdd = {
-    provider = "DiffAdd",
-    icon = icons.add,
+    condition = condition.check_git_workspace,
     highlight = { colors.galaxy.add_fg, colors.galaxy.add_bg },
+    icon = icons.add,
+    provider = "DiffAdd",
     separator = icons.right_bubble,
     separator_highlight = { colors.galaxy.add_bg, colors.galaxy.change_bg },
-    condition = condition.check_git_workspace,
   },
 }
 
 index = index + 1
 gls.left[index] = {
   DiffModified = {
-    provider = "DiffModified",
-    icon = icons.change,
+    condition = condition.check_git_workspace,
     highlight = { colors.galaxy.change_fg, colors.galaxy.change_bg },
+    icon = icons.change,
+    provider = "DiffModified",
     separator = icons.right_bubble,
     separator_highlight = { colors.galaxy.change_bg, colors.galaxy.delete_bg },
-    condition = condition.check_git_workspace,
   },
 }
 
 index = index + 1
 gls.left[index] = {
   DiffRemove = {
-    provider = "DiffRemove",
-    icon = icons.delete,
+    condition = condition.check_git_workspace,
     highlight = { colors.galaxy.delete_fg, colors.galaxy.delete_bg },
+    icon = icons.delete,
+    provider = "DiffRemove",
     separator = icons.right_bubble,
     separator_highlight = { colors.galaxy.delete_bg, colors.bg_statusline },
-    condition = condition.check_git_workspace,
   },
 }
 
 -- --> mid
 index = 1
 gls.mid[index] = {
-  ShowLspSpaceLeft = {
-    provider = function()
-      return " "
-    end,
-    highlight = { colors.fg, colors.bg_statusline },
+  ShowLspBubbleStart = {
     condition = HideDashboard(),
-  },
-}
-
-index = index + 1
-gls.mid[index] = {
-  ShowLspBubbleLeft = {
+    highlight = { colors.galaxy.lsp_icon_bg, colors.bg_statusline },
     provider = function()
       return icons.left_bubble
     end,
-    highlight = { colors.galaxy.lsp_icon_bg, colors.bg_statusline },
-    condition = HideDashboard(),
   },
 }
 
 index = index + 1
 gls.mid[index] = {
   ShowLspIcon = {
+    condition = HideDashboard(),
+    highlight = { colors.galaxy.lsp_icon_fg, colors.galaxy.lsp_icon_bg },
     provider = function()
       return icons.lsp_icon
     end,
-    highlight = { colors.galaxy.lsp_icon_fg, colors.galaxy.lsp_icon_bg },
-    condition = HideDashboard(),
   },
 }
 
--- in the sections earlier separator/separator_highlight worked well;
--- with this section, it was moving them to places that didn't make sense
--- so I added extra space/separator sections to make it work
 index = index + 1
 gls.mid[index] = {
-  ShowLspBubbleSeparator = {
+  ShowLspBubble = {
+    condition = HideDashboard(),
+    highlight = { colors.galaxy.lsp_icon_bg, colors.galaxy.lsp_name_bg },
     provider = function()
-      return ""
+      return icons.right_bubble
     end,
-    highlight = { colors.galaxy.lsp_icon_fg, colors.galaxy.lsp_icon_bg },
-    separator = icons.right_bubble,
-    separator_highlight = { colors.galaxy.lsp_icon_bg, colors.galaxy.lsp_name_bg },
-    condition = HideDashboard(),
   },
 }
 
 index = index + 1
 gls.mid[index] = {
-  ShowLspNameStartSpacer = {
+  ShowLspNameSpacerStart = {
+    condition = HideDashboard(),
+    highlight = { colors.galaxy.lsp_name_fg, colors.galaxy.lsp_name_bg },
     provider = function()
       return " "
     end,
-    highlight = { colors.galaxy.lsp_name_fg, colors.galaxy.lsp_name_bg },
-    condition = HideDashboard(),
   },
 }
 
 index = index + 1
 gls.mid[index] = {
   ShowLspClient = {
+    condition = HideDashboard(),
+    highlight = { colors.galaxy.lsp_name_fg, colors.galaxy.lsp_name_bg },
     provider = "GetLspClient",
-    highlight = { colors.galaxy.lsp_name_fg, colors.galaxy.lsp_name_bg },
-    condition = HideDashboard(),
   },
 }
 
 index = index + 1
 gls.mid[index] = {
-  ShowLspNameEndSpacer = {
+  ShowLspNameSpacerEnd = {
+    condition = HideDashboard(),
+    highlight = { colors.galaxy.lsp_name_fg, colors.galaxy.lsp_name_bg },
     provider = function()
       return " "
     end,
-    highlight = { colors.galaxy.lsp_name_fg, colors.galaxy.lsp_name_bg },
-    condition = HideDashboard(),
   },
 }
 
 index = index + 1
 gls.mid[index] = {
-  ShowLspBubbleRight = {
-    provider = function()
-      return ""
-    end,
-    highlight = { colors.galaxy.lsp_icon_fg, colors.galaxy.lsp_icon_bg },
-    separator = icons.right_bubble,
-    separator_highlight = { colors.galaxy.lsp_name_bg, colors.bg_statusline },
+  ShowLspBubbleEnd = {
     condition = HideDashboard(),
-  },
-}
-
-index = index + 1
-gls.mid[index] = {
-  ShowLspSpaceRight = {
+    highlight = { colors.galaxy.lsp_name_bg, colors.bg_statusline },
     provider = function()
-      return " "
+      return icons.right_bubble
     end,
-    highlight = { colors.fg, colors.bg_statusline },
-    condition = HideDashboard(),
   },
 }
 
 -- --> right
 index = 1
 gls.right[index] = {
-  BubbleDiagnosticLeft = {
-    provider = function()
-      return icons.left_bubble
-    end,
-    highlight = { colors.galaxy.error_bg, colors.bg_statusline },
-  },
-}
-
-index = index + 1
-gls.right[index] = {
   DiagnosticError = {
-    provider = "DiagnosticError",
-    icon = icons.error,
     highlight = { colors.galaxy.error_fg, colors.galaxy.error_bg },
-    separator = icons.right_bubble,
-    separator_highlight = { colors.galaxy.error_bg, colors.galaxy.warn_bg },
+    icon = icons.error,
+    provider = "DiagnosticError",
+    separator = icons.left_bubble,
+    separator_highlight = { colors.galaxy.error_bg, colors.bg_statusline },
   },
 }
 
 index = index + 1
 gls.right[index] = {
   DiagnosticWarn = {
-    provider = "DiagnosticWarn",
-    icon = icons.warn,
     highlight = { colors.galaxy.warn_fg, colors.galaxy.warn_bg },
-    separator = icons.right_bubble,
-    separator_highlight = { colors.galaxy.warn_bg, colors.galaxy.hint_bg },
+    icon = icons.warn,
+    provider = "DiagnosticWarn",
+    separator = icons.left_bubble,
+    separator_highlight = { colors.galaxy.warn_bg, colors.galaxy.error_bg },
   },
 }
 
 index = index + 1
 gls.right[index] = {
   DiagnosticHint = {
-    provider = "DiagnosticHint",
-    icon = icons.hint,
     highlight = { colors.galaxy.hint_fg, colors.galaxy.hint_bg },
-    separator = icons.right_bubble,
-    separator_highlight = { colors.galaxy.hint_bg, colors.galaxy.info_bg },
+    icon = icons.hint,
+    provider = "DiagnosticHint",
+    separator = icons.left_bubble,
+    separator_highlight = { colors.galaxy.hint_bg, colors.galaxy.warn_bg },
   },
 }
 
 index = index + 1
 gls.right[index] = {
   DiagnosticInfo = {
-    provider = "DiagnosticInfo",
-    icon = icons.info,
     highlight = { colors.galaxy.info_fg, colors.galaxy.info_bg },
-    separator = icons.right_bubble,
-    separator_highlight = { colors.galaxy.info_bg, colors.galaxy.bg_statusline },
-  },
-}
-
-index = index + 1
-gls.right[index] = {
-  DiagnosticFileSpacer = {
-    provider = function()
-      return " "
-    end,
-    highlight = { "NONE", colors.bg_statusline },
-    condition = condition.hide_in_width,
-  },
-}
-
-index = index + 1
-gls.right[index] = {
-  BubbleFileEncodeLeft = {
-    provider = function()
-      return ""
-    end,
+    icon = icons.info,
+    provider = "DiagnosticInfo",
     separator = icons.left_bubble,
-    highlight = { "NONE", colors.bg_statusline },
-    separator_highlight = { colors.galaxy.encoding_bg, colors.galaxy.bg_statusline },
-    condition = condition.hide_in_width,
+    separator_highlight = { colors.galaxy.info_bg, colors.galaxy.hint_bg },
   },
 }
 
 index = index + 1
 gls.right[index] = {
   FileEncode = {
-    provider = "FileEncode",
-    separator = icons.right_bubble,
-    highlight = { colors.galaxy.encoding_fg, colors.galaxy.encoding_bg },
-    separator_highlight = { colors.galaxy.encoding_bg, colors.galaxy.format_bg },
     condition = condition.hide_in_width,
+    highlight = { colors.galaxy.encoding_fg, colors.galaxy.encoding_bg },
+    provider = "FileEncode",
+    separator = icons.left_bubble,
+    separator_highlight = { colors.galaxy.encoding_bg, colors.galaxy.info_bg },
   },
 }
 
 index = index + 1
 gls.right[index] = {
-  FileEndSeparator = {
+  EncodeSpacer = {
+    condition = condition.hide_in_width,
+    highlight = { colors.galaxy.encoding_fg, colors.galaxy.encoding_bg },
     provider = function()
       return " "
     end,
-    highlight = { "NONE", colors.bg_statusline },
   },
 }
 
 index = index + 1
 gls.right[index] = {
   FileFormat = {
-    provider = "FileFormat",
-    highlight = { colors.galaxy.format_fg, colors.galaxy.format_bg },
-    separator = icons.right_bubble,
-    separator_highlight = { colors.galaxy.format_bg, colors.bg_statusline },
     condition = condition.hide_in_width,
+    highlight = { colors.galaxy.format_fg, colors.galaxy.format_bg },
+    provider = "FileFormat",
+    separator = icons.left_bubble,
+    separator_highlight = { colors.galaxy.format_bg, colors.galaxy.encoding_bg },
+  },
+}
+
+index = index + 1
+gls.right[index] = {
+  BubbleFileEnd = {
+    highlight = { colors.galaxy.format_bg, colors.bg_statusline },
+    provider = function()
+      return icons.right_bubble
+    end,
   },
 }
 
 index = index + 1
 gls.right[index] = {
   FileEndSeparator = {
+    highlight = { colors.fg, colors.bg_statusline },
     provider = function()
       return " "
     end,
-    highlight = { colors.fg, colors.bg_statusline },
+  },
+}
+
+index = index + 1
+gls.right[index] = {
+  StatusRight = {
+    provider = function()
+      local cmd = ModeColor("GalaxyStatusRight", colors.bg_statusline)
+      vim.api.nvim_command(cmd)
+      return icons.status_right
+    end,
   },
 }
 
@@ -452,7 +413,7 @@ gls.right[index] = {
     provider = function()
       local cmd = ModeColor("GalaxyModeBarRight", colors.bg_statusline)
       vim.api.nvim_command(cmd)
-      return " ▊"
+      return icons.right_bar
     end,
   },
 }
