@@ -22,7 +22,7 @@ function config.tokyonight()
 end
 
 function config.galaxyline()
-  require("modules.ui.rbmvline")
+  require("modules.ui.bubbleline")
 end
 
 function config.dashboard()
