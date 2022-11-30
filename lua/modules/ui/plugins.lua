@@ -26,24 +26,24 @@ plugin({
   wants = "nvim-tree/nvim-web-devicons",
 })
 
-plugin({ 
-  "romgrk/barbar.nvim", 
-  config = conf.barbar, 
-  wants = "nvim-web-devicons" 
+plugin({
+  "romgrk/barbar.nvim",
+  config = conf.barbar,
+  wants = "nvim-web-devicons"
 })
 
-plugin({ 
+plugin({
   "lewis6991/gitsigns.nvim",
-  config = conf.gitsigns, 
+  config = conf.gitsigns,
 })
 
-plugin({ 
+plugin({
   "kevinhwang91/nvim-hlslens",
-  config = conf.hlslens, 
+  config = conf.hlslens,
 })
 
-plugin({ 
-  "petertriho/nvim-scrollbar", 
+plugin({
+  "petertriho/nvim-scrollbar",
   config = conf.scrollbar,
   wants = {
     "gitsigns",
