@@ -418,7 +418,8 @@ gls.right[index] = {
   },
 }
 
--- --> short line
+-- </> short line
+-- --> needs work
 index = 1
 gls.short_line_left[index] = {
   BufferType = {
