@@ -2,18 +2,17 @@
 
 -- </> setup
 -- --> load scrollbar via protected call
-local status_ok, scrollbar = pcall(require, "scrollbar")
-if not status_ok then
+local status_scrollbar, scrollbar = pcall(require, "scrollbar")
+if not status_scrollbar then
   return
 end
 
 -- --> load tokyonight colors and utils
-local status_ok, tokyo_colors = pcall(require, "tokyonight.colors")
-if not status_ok then
+local status_tokyo, tokyo_colors = pcall(require, "tokyonight.colors")
+if not status_tokyo then
   return
 end
 local colors = tokyo_colors.setup()
-local util = require("tokyonight.util")
 
 -- </> scrollbar
 scrollbar.setup({
@@ -23,100 +22,32 @@ scrollbar.setup({
   folds = 1000, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
   max_lines = false, -- disables if no. of lines in buffer exceeds this
   hide_if_all_visible = false, -- Hides everything if all lines are visible
-  handle = {
-    text = " ",
-    color = colors.bg_highlight,
-    cterm = nil,
-    hide_if_all_visible = true, -- Hides handle if all lines are visible
-  },
+  handle = { color = colors.bg_highlight },
   marks = {
     Cursor = {
-      text = "•",
-      priority = 0,
-      color = nil,
-      cterm = nil,
+      text = " ",
       highlight = "Normal",
     },
-    Search = {
-      text = { "-", "=" },
-      priority = 1,
-      color = colors.orange,
-      cterm = nil,
-    },
-    Error = {
-      text = { "-", "=" },
-      priority = 2,
-      color = colors.error,
-      cterm = nil,
-    },
-    Warn = {
-      text = { "-", "=" },
-      priority = 3,
-      color = colors.warning,
-      cterm = nil,
-    },
-    Info = {
-      text = { "-", "=" },
-      priority = 4,
-      color = colors.info,
-      cterm = nil,
-    },
-    Hint = {
-      text = { "-", "=" },
-      priority = 5,
-      color = colors.hint,
-      cterm = nil,
-    },
-    Misc = {
-      text = { "-", "=" },
-      priority = 6,
-      color = colors.purple,
-      cterm = nil,
-    },
+    Search = { color = colors.orange },
+    Error = { color = colors.error },
+    Warn = { color = colors.warning },
+    Info = { color = colors.info },
+    Hint = { color = colors.hint },
+    Misc = { color = colors.purple },
     GitAdd = {
-      text = "┆",
-      priority = 7,
-      color = nil,
-      cterm = nil,
+      text = "",
+      color = colors.git.add,
       highlight = "GitSignsAdd",
     },
     GitChange = {
-      text = "┆",
-      priority = 7,
-      color = nil,
-      cterm = nil,
+      text = "•",
+      color = colors.git.change,
       highlight = "GitSignsChange",
     },
     GitDelete = {
-      text = "▁",
-      priority = 7,
-      color = nil,
-      cterm = nil,
+      text = "",
+      color = colors.git.delete,
       highlight = "GitSignsDelete",
-    },
-  },
-  excluded_buftypes = { "terminal", },
-  excluded_filetypes = {
-    "prompt",
-    "TelescopePrompt",
-    "noice",
-  },
-  autocmd = {
-    render = {
-      "BufWinEnter",
-      "TabEnter",
-      "TermEnter",
-      "WinEnter",
-      "CmdwinLeave",
-      "TextChanged",
-      "VimResized",
-      "WinScrolled",
-    },
-    clear = {
-      "BufWinLeave",
-      "TabLeave",
-      "TermLeave",
-      "WinLeave",
     },
   },
   handlers = {
