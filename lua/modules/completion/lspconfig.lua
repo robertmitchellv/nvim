@@ -1,8 +1,10 @@
-local status_ok, lspconfig = pcall(require, "lspconfig")
-if not status_ok then
+-- load lspconfig safely
+local status_lspconfig, lspconfig = pcall(require, "lspconfig")
+if not status_lspconfig then
   return
 end
 
+-- to enable autocompletion
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 if not packer_plugins["cmp-nvim-lsp"].loaded then
@@ -10,6 +12,7 @@ if not packer_plugins["cmp-nvim-lsp"].loaded then
 end
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
+-- the lsp signs i want to use
 local signs = {
   Error = " ",
   Warn = " ",
@@ -28,11 +31,12 @@ vim.diagnostic.config({
   underline = true,
   severity_sort = true,
   virtual_text = {
-    prefix = "🔥",
+    prefix = " ",
     source = true,
   },
 })
 
+-- python
 lspconfig.pyright.setup({
   -- pyright configflags
   flags = { debounce_text_changes = 150 },
@@ -49,6 +53,13 @@ lspconfig.pyright.setup({
   capabilities = capabilities,
 })
 
+-- r
+lspconfig.r_language_server.setup({
+  filetypes = { "r", "rmd" },
+  capabilities = capabilities,
+})
+
+-- lua
 lspconfig.sumneko_lua.setup({
   settings = {
     Lua = {
@@ -77,31 +88,29 @@ local servers = {
   "ansiblels",
   "astro",
   "bashls",
-  -- "bicep",
-  -- "clangd",
+  "clangd",
   "cssls",
   "denols",
   "dockerls",
   "eslint",
-  -- "gopls",
+  "gopls",
   "html",
   "jsonls",
-  "tsserver",
-  -- "julials",
-  -- "ltex",
-  -- "sumneko_lua",
-  -- "marksman",
-  "pyright",
+  "julials",
+  "lemminx", -- xml
+  "ltex", -- latex
+  "marksman", -- markdown
+  -- "pyright",
   -- "r_language_server",
-  -- "rust_analyzer",
+  "rust_analyzer",
   "sqlls",
-  "taplo",
+  -- "sumneko_lua", -- lua
+  "taplo", -- toml
   "tailwindcss",
-  -- "terraformls",
-  -- "volar",
-  -- "lemminx",
+  "terraformls",
+  "tsserver", -- ts and js
+  "volar", -- vue
   "yamlls",
-  -- "zls"
 }
 
 for _, server in ipairs(servers) do
