@@ -105,4 +105,12 @@ function config.nvim_treesitter()
   })
 end
 
+function config.trouble()
+  require("trouble").setup({})
+end
+
+function config.todo_comments()
+  require("todo-comments").setup({})
+end
+
 return config

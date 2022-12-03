@@ -18,11 +18,23 @@ plugin({
 })
 
 plugin({
-  'nvim-treesitter/nvim-treesitter',
-  event = 'BufRead',
-  run = ':TSUpdate',
-  after = 'telescope.nvim',
+  "nvim-treesitter/nvim-treesitter",
+  event = "BufRead",
+  run = ":TSUpdate",
+  after = "telescope.nvim",
   config = conf.nvim_treesitter,
 })
 
-plugin({ 'nvim-treesitter/nvim-treesitter-textobjects', after = 'nvim-treesitter' })
+plugin({ "nvim-treesitter/nvim-treesitter-textobjects", after = "nvim-treesitter" })
+
+plugin({
+  "folke/trouble.nvim",
+  config = conf.trouble,
+  requires = { "nvim-tree/nvim-web-devicons" },
+})
+
+plugin({
+  "folke/todo-comments.nvim",
+  config = conf.todo_comments,
+  requires = { "nvim-lua/plenary.nvim" },
+})
