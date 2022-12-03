@@ -26,31 +26,67 @@ function config.galaxyline()
 end
 
 function config.dashboard()
-  local home = os.getenv('HOME')
-  local db = require('dashboard')
-  db.session_directory = home .. '/.cache/nvim/session'
-  db.preview_command = 'cat | lolcat -F 0.3'
-  db.preview_file_path = home .. '/.config/nvim/static/neovim.cat'
-  db.preview_file_height = 12
+  local home = os.getenv("HOME")
+  local db = require("dashboard")
+  local colors = require("tokyonight.colors").setup()
+  db.session_directory = home .. "/.cache/nvim/session"
+  db.preview_command = "cat | viu -b -w 80 -h 15" -- make sure it matches what's set below
+  db.preview_file_path = home .. "/.config/nvim/static/akira.jpg"
+  db.preview_file_height = 15
   db.preview_file_width = 80
+  db.custom_header = nil
+  db.custom_footer = nil
+  db.header_pad = 0.5
+  db.center_pad = 0.5
+  db.footer_pad = 0.5
   db.custom_center = {
     {
-      icon = '  ',
-      desc = 'Update Plugins                          ',
-      shortcut = 'SPC p u',
-      action = 'PackerUpdate',
+      icon = "   ",
+      icon_hl = { fg = colors.red },
+      desc = "Update Plugins                          ",
+      shortcut = "SPC p u",
+      action = "PackerUpdate",
     },
     {
-      icon = '  ',
-      desc = 'Find File                              ',
-      action = 'Telescope find_files find_command=rg,--hidden,--files',
-      shortcut = 'SPC f f',
+      icon = "   ",
+      icon_hl = { fg = colors.orange },
+      desc = "Sync Plugins                            ",
+      shortcut = "SPC p s",
+      action = "PackerSync",
+    },
+    {
+      icon = "   ",
+      icon_hl = { fg = colors.yellow },
+      desc = "Update Mason                            ",
+      shortcut = "SPC   m",
+      action = "Mason",
+    },
+    {
+      icon = "   ",
+      icon_hl = { fg = colors.green },
+      desc = "Find File                               ",
+      shortcut = "SPC f f",
+      action = "Telescope find_files find_command=rg,--hidden,--files",
+    },
+    {
+      icon = "   ",
+      icon_hl = { fg = colors.cyan },
+      desc = "File Browser                            ",
+      shortcut = "SPC   e",
+      action = "Telescope file_browser",
+    },
+    {
+      icon = "   ",
+      icon_hl = { fg = colors.blue  },
+      desc = "Find  word                              ",
+      shortcut = "SPC f b",
+      action = "Telescope live_grep",
     },
   }
 end
 
 function config.nvim_tree()
-  require('nvim-tree').setup({
+  require("nvim-tree").setup({
     disable_netrw = false,
     hijack_cursor = true,
     hijack_netrw = true,
@@ -62,13 +98,29 @@ function config.scrollbar()
 end
 
 function config.gitsigns()
-  require("gitsigns").setup()
+  if not packer_plugins["plenary.nvim"].loaded then
+    vim.cmd([[packadd plenary.nvim]])
+  end
+  require("gitsigns").setup({
+    signs = {
+      add = { hl = 'GitGutterAdd', text = '▋' },
+      change = { hl = 'GitGutterChange', text = '▋' },
+      delete = { hl = 'GitGutterDelete', text = '▋' },
+      topdelete = { hl = 'GitGutterDeleteChange', text = '▔' },
+      changedelete = { hl = 'GitGutterChange', text = '▎' },
+      untracked = { hl = 'GitGutterAdd', text = '▋' },
+    },
+  })
   require("scrollbar.handlers.gitsigns").setup()
 end
 
 function config.hlslens()
   -- require("hlslens").setup() is not required
-  require("scrollbar.handlers.search").setup()
+  require("scrollbar.handlers.search").setup({
+    -- hlslens config overrides
+    calm_down = true,
+    nearest_float_when = "always",
+  })
 end
 
 return config

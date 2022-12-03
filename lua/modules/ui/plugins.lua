@@ -13,8 +13,7 @@ plugin({ "glepnir/dashboard-nvim", config = conf.dashboard })
 plugin({
   "nvim-tree/nvim-tree.lua",
   config = conf.nvim_tree,
-  requires = {"nvim-tree/nvim-web-devicons",
-  },
+  requires = { "nvim-tree/nvim-web-devicons" },
   tag = "nightly"
 })
 
@@ -35,6 +34,7 @@ plugin({
 plugin({
   "lewis6991/gitsigns.nvim",
   config = conf.gitsigns,
+  requires = { "nvim-lua/plenary.nvim" },
 })
 
 plugin({
@@ -50,4 +50,3 @@ plugin({
     "hlslens"
   }
 })
-
