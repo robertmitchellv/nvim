@@ -41,6 +41,8 @@ local enable_lsp_filetype = {
   "sql", "mysql", "sqlite3",
   -- lua
   "lua",
+  -- quarto
+  "qmd",
   -- svelte 
   "svelte",
   -- tailwindcss
@@ -78,6 +80,8 @@ plugin({
 
 plugin({ "glepnir/lspsaga.nvim", after = "nvim-lspconfig", config = conf.lspsaga })
 
+plugin({ "quarto-dev/quarto-nvim", after = "nvim-lspconfig", config = conf.quarto })
+
 plugin({
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
@@ -93,4 +97,3 @@ plugin({
 plugin({ "L3MON4D3/LuaSnip", event = "InsertCharPre", config = conf.lua_snip })
 
 plugin({ "windwp/nvim-autopairs", event = "InsertEnter", config = conf.auto_pairs })
-

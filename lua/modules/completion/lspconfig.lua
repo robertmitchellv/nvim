@@ -36,8 +36,15 @@ vim.diagnostic.config({
   },
 })
 
+-- markdown
+lspconfig.marksman.setup({
+  filetypes = { "md" },
+  capabilities = capabilities,
+})
+
 -- python
 lspconfig.pyright.setup({
+  capabilities = capabilities,
   -- pyright configflags
   flags = { debounce_text_changes = 150 },
   settings = {
@@ -50,7 +57,6 @@ lspconfig.pyright.setup({
       },
     },
   },
-  capabilities = capabilities,
 })
 
 -- r
@@ -59,8 +65,14 @@ lspconfig.r_language_server.setup({
   capabilities = capabilities,
 })
 
+-- rust
+lspconfig.rust_analyzer.setup({
+  capabilities = capabilities,
+})
+
 -- lua
 lspconfig.sumneko_lua.setup({
+  capabilities = capabilities,
   settings = {
     Lua = {
       runtime = {
@@ -99,10 +111,10 @@ local servers = {
   "julials",
   "lemminx", -- xml
   "ltex", -- latex
-  "marksman", -- markdown
+  -- "marksman", -- markdown
   -- "pyright",
   -- "r_language_server",
-  "rust_analyzer",
+  -- "rust_analyzer",
   "sqlls",
   -- "sumneko_lua", -- lua
   "taplo", -- toml

@@ -58,6 +58,16 @@ function config.lspsaga()
   })
 end
 
+function config.quarto()
+  require("quarto").setup({
+    closePreviewOnExit = true, -- close preview terminal on closing of qmd file buffer
+    diagnostics = {
+      enabled = false, -- enable diagnostics for embedded languageserver
+      languages = { "r", "python", "julia" },
+    }
+  })
+end
+
 function config.nvim_cmp()
   local cmp = require("cmp")
 
