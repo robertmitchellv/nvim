@@ -30,15 +30,15 @@ function config.dashboard()
   local db = require("dashboard")
   local colors = require("tokyonight.colors").setup()
   db.session_directory = home .. "/.cache/nvim/session"
-  db.preview_command = "cat | viu -b -w 80 -h 15" -- make sure it matches what's set below
-  db.preview_file_path = home .. "/.config/nvim/static/akira.jpg"
+  db.preview_command = "viu -b -w 80 -h 15" -- make sure it matches what's set below
+  db.preview_file_path = home .. "/.config/nvim/static/akira-banner-02.png"
   db.preview_file_height = 15
   db.preview_file_width = 80
   db.custom_header = nil
   db.custom_footer = nil
-  db.header_pad = 0.5
-  db.center_pad = 0.5
-  db.footer_pad = 0.5
+  db.header_pad = 0.2
+  db.center_pad = 0.2
+  db.footer_pad = 0.2
   db.custom_center = {
     {
       icon = "   ",
