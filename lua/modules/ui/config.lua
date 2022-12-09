@@ -86,7 +86,6 @@ function config.dashboard()
 end
 
 function config.nvim_tree()
-  local cwd = vim.fn.getcwd()
   require("nvim-tree").setup({
     sort_by = "type",
     view = {
@@ -96,7 +95,17 @@ function config.nvim_tree()
     renderer = {
       highlight_opened_files = "all",
       root_folder_label = function()
-        return "  " .. vim.fn.fnamemodify(cwd, ":t")
+        local cwd = vim.fn.getcwd()
+        local user = "/home/rbmv"
+        local home = "/home"
+        if (cwd == user)
+          then
+            return "  " .. vim.fn.fnamemodify(cwd, ":t")
+          elseif (cwd == home) then
+            return "  " .. vim.fn.fnamemodify(cwd, ":t")
+          else
+            return "  " .. vim.fn.fnamemodify(cwd, ":t")
+          end
       end,
       indent_markers = {
         enable = false,
