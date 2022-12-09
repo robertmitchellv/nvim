@@ -14,7 +14,7 @@ plugin({
   "nvim-tree/nvim-tree.lua",
   config = conf.nvim_tree,
   requires = { "nvim-tree/nvim-web-devicons" },
-  tag = "nightly"
+  branch = "master",
 })
 
 -- use wants devicons below
@@ -48,5 +48,14 @@ plugin({
   wants = {
     "gitsigns",
     "hlslens"
+  }
+})
+
+plugin({
+  "folke/noice.nvim",
+  config = conf.noice,
+  requires = {
+    "MunifTanjim/nui.nvim",
+    "rcarriga/nvim-notify",
   }
 })

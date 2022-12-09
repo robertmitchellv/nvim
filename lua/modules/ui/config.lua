@@ -86,11 +86,89 @@ function config.dashboard()
 end
 
 function config.nvim_tree()
+  local cwd = vim.fn.getcwd()
   require("nvim-tree").setup({
-    disable_netrw = false,
-    hijack_cursor = true,
-    hijack_netrw = true,
-  })
+    sort_by = "type",
+    view = {
+      width = 25,
+      signcolumn = "yes",
+    },
+    renderer = {
+      highlight_opened_files = "all",
+      root_folder_label = function()
+        return "  " .. vim.fn.fnamemodify(cwd, ":t")
+      end,
+      indent_markers = {
+        enable = false,
+        inline_arrows = true,
+        icons = {
+          corner = "└",
+          edge = "│",
+          item = "│",
+          bottom = "─",
+          none = " ",
+        },
+      },
+      icons = {
+        webdev_colors = true,
+        git_placement = "signcolumn",
+        padding = " ",
+        symlink_arrow = "  ",
+        show = {
+          file = true,
+          folder = true,
+          folder_arrow = true,
+          git = true,
+        },
+        glyphs = {
+          default = "",
+          symlink = "",
+          bookmark = "",
+          folder = {
+            arrow_closed = "",
+            arrow_open = "",
+            default = "",
+            open = "",
+            empty = "",
+            empty_open = "",
+            symlink = "",
+            symlink_open = "",
+          },
+          git = {
+            unstaged = " ",
+            staged = " ",
+            unmerged = "",
+            renamed = "",
+            untracked = " ",
+            deleted = " ",
+            ignored = "",
+          },
+        },
+      },
+      special_files = {
+        "Cargo.toml",
+        "Makefile",
+        "README.md",
+        "readme.md",
+        "_quarto.yml",
+        "mamba_env.yml",
+        "environment.yml",
+        "requirements.txt",
+        "renv.lock",
+        ".Rprofile",
+      },
+    },
+    git = {
+      enable = true,
+      ignore = false,
+      show_on_dirs = false,
+      timeout = 400,
+    },
+    trash = {
+      cmd = "trash-put",
+      require_confirm = true,
+    },
+})
 end
 
 function config.scrollbar()
@@ -120,6 +198,13 @@ function config.hlslens()
     -- hlslens config overrides
     calm_down = true,
     nearest_float_when = "always",
+  })
+end
+
+function config.noice()
+  require("noice").setup({
+    -- not sure if i'll override defaults or not
+    -- since it's new/experimental
   })
 end
 
