@@ -76,12 +76,12 @@ lspconfig.sumneko_lua.setup({
   settings = {
     Lua = {
       runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT',
+        -- Tell the language server which version of Lua you"re using (most likely LuaJIT in the case of Neovim)
+        version = "LuaJIT",
       },
       diagnostics = {
         -- Get the language server to recognize the `vim` globalglobals
-        globals = {'vim'},
+        globals = {"vim"},
       },
       workspace = {
         -- Make the server aware of Neovim runtime fileslibrary

@@ -1,2 +1,2 @@
 -- load modules
-require('core')
+require("core")
