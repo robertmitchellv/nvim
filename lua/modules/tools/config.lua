@@ -113,6 +113,12 @@ function config.todo_comments()
   require("todo-comments").setup({})
 end
 
+function config.dap()
+  require("dapui").setup({
+    --
+  })
+end
+
 -- wait for PR from jmbuhr
 -- function config.femaco()
 --   require("femaco").setup({

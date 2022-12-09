@@ -39,6 +39,12 @@ plugin({
   requires = { "nvim-lua/plenary.nvim" },
 })
 
+plugin({
+  "rcarriga/nvim-dap-ui",
+  config = conf.dap,
+  requires = { "mfussenegger/nvim-dap" }
+})
+
 -- wait for PR from jmbuhr
 -- plugin({
 --   "AckslD/nvim-FeMaco.lua",
