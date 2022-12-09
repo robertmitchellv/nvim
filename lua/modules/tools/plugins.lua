@@ -38,3 +38,10 @@ plugin({
   config = conf.todo_comments,
   requires = { "nvim-lua/plenary.nvim" },
 })
+
+-- wait for PR from jmbuhr
+-- plugin({
+--   "AckslD/nvim-FeMaco.lua",
+--   config = conf.femaco,
+--   requires = { "nvim-treesitter" },
+-- })

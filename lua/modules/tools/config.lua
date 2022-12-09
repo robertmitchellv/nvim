@@ -113,4 +113,11 @@ function config.todo_comments()
   require("todo-comments").setup({})
 end
 
+-- wait for PR from jmbuhr
+-- function config.femaco()
+--   require("femaco").setup({
+--     -- config
+--   })
+-- end
+
 return config
