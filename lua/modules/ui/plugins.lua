@@ -14,7 +14,7 @@ plugin({
   "nvim-tree/nvim-tree.lua",
   config = conf.nvim_tree,
   requires = { "nvim-tree/nvim-web-devicons" },
-  branch = "master",
+  tag = "nightly",
 })
 
 -- use wants devicons below

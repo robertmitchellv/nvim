@@ -16,7 +16,7 @@ function config.tokyonight()
       comments = { italic = true },
       keywords = { italic = false },
       sidebars = "dark",
-      floats = "dark"
+      floats = "dark",
     }
   })
 end
