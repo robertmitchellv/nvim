@@ -47,7 +47,7 @@ gh auth login
 gh repo clone robertmitchellv/nvim ~/.config/nvim
 ```
 
-_from `glepnir/dope`:
+_from `glepnir/dope`:_
 
 ## What is dope
 
@@ -166,11 +166,5 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 10
 linux
 xset r rate 210 40
 ```
-
-## Donate
-
-[![](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/bobbyhub)
-
-If you'd like to support my work financially, buy me a drink through [paypal](https://paypal.me/bobbyhub)
 
 ## Licenese MIT
