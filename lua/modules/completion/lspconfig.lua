@@ -7,9 +7,6 @@ end
 -- to enable autocompletion
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-if not packer_plugins["cmp-nvim-lsp"].loaded then
-  vim.cmd([[packadd cmp-nvim-lsp]])
-end
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
 -- the lsp signs i want to use
@@ -84,6 +81,8 @@ lspconfig.sumneko_lua.setup({
         globals = {"vim"},
       },
       workspace = {
+        -- Don't show message about luassert
+        checkThirdParty = false,
         -- Make the server aware of Neovim runtime fileslibrary
         library = vim.api.nvim_get_runtime_file("", true),
       },
