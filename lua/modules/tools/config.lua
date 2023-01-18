@@ -1,15 +1,6 @@
--- author: glepnr https://github.com/glepnir
--- date: 2022-07-02
--- License: MIT
-
 local config = {}
 
 function config.telescope()
-  if not packer_plugins["plenary.nvim"].loaded then
-    vim.cmd([[packadd plenary.nvim]])
-    vim.cmd([[packadd telescope-fzy-native.nvim]])
-    vim.cmd([[packadd telescope-file-browser.nvim]])
-  end
   local fb_actions = require("telescope").extensions.file_browser.actions
   require("telescope").setup({
     defaults = {

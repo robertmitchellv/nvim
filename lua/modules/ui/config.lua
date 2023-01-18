@@ -1,7 +1,3 @@
--- author: glepnr https://github.com/glepnir
--- date: 2022-07-02
--- License: MIT
-
 local config = {}
 
 function config.tokyonight()
@@ -45,14 +41,14 @@ function config.dashboard()
       icon_hl = { fg = colors.red },
       desc = "Update Plugins                          ",
       shortcut = "SPC p u",
-      action = "PackerUpdate",
+      action = "Lazy update",
     },
     {
       icon = "   ",
       icon_hl = { fg = colors.orange },
       desc = "Sync Plugins                            ",
       shortcut = "SPC p s",
-      action = "PackerSync",
+      action = "Lazy sync",
     },
     {
       icon = "   ",
@@ -185,9 +181,6 @@ function config.scrollbar()
 end
 
 function config.gitsigns()
-  if not packer_plugins["plenary.nvim"].loaded then
-    vim.cmd([[packadd plenary.nvim]])
-  end
   require("gitsigns").setup({
     signs = {
       add = { hl = 'GitGutterAdd', text = '▋' },

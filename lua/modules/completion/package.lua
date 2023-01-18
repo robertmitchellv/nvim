@@ -1,8 +1,4 @@
--- author: glepnr https://github.com/glepnir
--- date: 2022-07-02
--- License: MIT
-
-local plugin = require("core.pack").register_plugin
+local package = require("core.pack").package
 local conf = require("modules.completion.config")
 
 local enable_lsp_filetype = {
@@ -25,13 +21,13 @@ local enable_lsp_filetype = {
   -- js, ts, + denols 
   "javascript", "javascriptreact", "javascript.jsx",
   "typescript", "typescriptreact", "typescript.tsx",
--- jsonls
+  -- jsonls
   "json", "jsonc",
   -- julia
   "julia",
   -- python
   "python",
-    -- marksman
+  -- marksman
   "markdown",
   -- rsats
   "r", "rmd",
@@ -60,17 +56,17 @@ local enable_lsp_filetype = {
   "yaml", "yaml.docker-compose",
 }
 
-plugin({
+package({
   "williamboman/mason.nvim",
   config = conf.mason,
 })
 
-plugin({
+package({
   "williamboman/mason-lspconfig.nvim",
   config = conf.mason_lspconfig,
 })
 
-plugin({
+package({
   "neovim/nvim-lspconfig",
   -- used filetype to lazyload lsp
   -- config your language filetype in here
@@ -78,22 +74,34 @@ plugin({
   config = conf.nvim_lsp,
 })
 
-plugin({ "glepnir/lspsaga.nvim", after = "nvim-lspconfig", config = conf.lspsaga })
+package({
+  "glepnir/lspsaga.nvim",
+  event = "BufRead",
+  ft = enable_lsp_filetype,
+  config = conf.lspsaga,
+})
 
-plugin({ "quarto-dev/quarto-nvim", after = "nvim-lspconfig", config = conf.quarto })
-
-plugin({
-  "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
-  config = conf.nvim_cmp,
-  requires = {
-    { "hrsh7th/cmp-nvim-lsp", after = "nvim-lspconfig" },
-    { "hrsh7th/cmp-path", after = "nvim-cmp" },
-    { "hrsh7th/cmp-buffer", after = "nvim-cmp" },
-    { "saadparwaiz1/cmp_luasnip", after = "LuaSnip" },
+package({
+  "quarto-dev/quarto-nvim",
+  config = conf.quarto,
+  dependencies = {
+    { "jmbuhr/otter.nvim" },
+    { "neovim/nvim-lspconfig" },
   },
 })
 
-plugin({ "L3MON4D3/LuaSnip", event = "InsertCharPre", config = conf.lua_snip })
+package({
+  "hrsh7th/nvim-cmp",
+  event = "InsertEnter",
+  config = conf.nvim_cmp,
+  dependencies = {
+    { "hrsh7th/cmp-nvim-lsp" },
+    { "hrsh7th/cmp-path" },
+    { "hrsh7th/cmp-buffer" },
+    { "saadparwaiz1/cmp_luasnip" },
+  },
+})
 
-plugin({ "windwp/nvim-autopairs", event = "InsertEnter", config = conf.auto_pairs })
+package({ "L3MON4D3/LuaSnip", event = "InsertCharPre", config = conf.lua_snip })
+
+package({ "windwp/nvim-autopairs", event = "InsertEnter", config = conf.auto_pairs })

@@ -1,7 +1,3 @@
--- author: glepnr https://github.com/glepnir
--- date: 2022-07-02
--- License: MIT
-
 local config = {}
 
 function config.mason()
@@ -50,20 +46,21 @@ function config.nvim_lsp()
 end
 
 function config.lspsaga()
-  local saga = require("lspsaga")
-  saga.init_lsp_saga({
-    symbol_in_winbar = {
-      enable = true,
-    },
-  })
+  require("lspsaga").setup({})
 end
 
 function config.quarto()
   require("quarto").setup({
-    closePreviewOnExit = true, -- close preview terminal on closing of qmd file buffer
-    diagnostics = {
-      enabled = false, -- enable diagnostics for embedded languageserver
+    lspFeatures = {
+      enabled = true,
       languages = { "r", "python", "julia" },
+      diagnostics = {
+        enabled = true,
+        triggers = { "BufWrite" }
+      },
+      completion = {
+        enabled = true
+      }
     }
   })
 end
