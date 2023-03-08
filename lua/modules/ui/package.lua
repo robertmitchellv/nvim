@@ -3,11 +3,16 @@ local conf = require("modules.ui.config")
 
 package({ "folke/tokyonight.nvim", config = conf.tokyonight })
 
-package({ "glepnir/dashboard-nvim", config = conf.dashboard })
+package({
+  "glepnir/dashboard-nvim",
+  config = conf.dashboard,
+  dependencies = {{ "nvim-tree/nvim-web-devicons" }},
+})
 
 package({
   "nvim-tree/nvim-tree.lua",
   config = conf.nvim_tree,
+  cmd = "NvimTreeToggle",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   tag = "nightly",
 })

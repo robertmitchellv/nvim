@@ -25,64 +25,60 @@ function config.dashboard()
   local home = os.getenv("HOME")
   local db = require("dashboard")
   local colors = require("tokyonight.colors").setup()
-  db.session_directory = home .. "/.cache/nvim/session"
-  db.preview_command = "viu -b -w 80 -h 15" -- make sure it matches what's set below
-  db.preview_file_path = home .. "/.config/nvim/static/akira-banner-02.png"
-  db.preview_file_height = 15
-  db.preview_file_width = 80
-  db.custom_header = nil
-  db.custom_footer = nil
-  db.header_pad = 0.2
-  db.center_pad = 0.2
-  db.footer_pad = 0.2
-  db.custom_center = {
-    {
-      icon = "   ",
-      icon_hl = { fg = colors.red },
-      desc = "Update Plugins                          ",
-      shortcut = "SPC p u",
-      action = "Lazy update",
+  db.setup({
+    theme = "hyper",
+    preview = {
+      command = "viu -b -h 12 -w 70",
+      -- command = "viu -h 12 -w 70",
+      file_path = home .. "/.config/nvim/static/akira-banner-01.png",
+      file_height = 12,
+      file_width = 70,
     },
-    {
-      icon = "   ",
-      icon_hl = { fg = colors.orange },
-      desc = "Sync Plugins                            ",
-      shortcut = "SPC p s",
-      action = "Lazy sync",
-    },
-    {
-      icon = "   ",
-      icon_hl = { fg = colors.yellow },
-      desc = "Update Mason                            ",
-      shortcut = "SPC   m",
-      action = "Mason",
-    },
-    {
-      icon = "   ",
-      icon_hl = { fg = colors.green },
-      desc = "Find File                               ",
-      shortcut = "SPC f f",
-      action = "Telescope find_files find_command=rg,--hidden,--files",
-    },
-    {
-      icon = "   ",
-      icon_hl = { fg = colors.cyan },
-      desc = "File Browser                            ",
-      shortcut = "SPC   e",
-      action = "Telescope file_browser",
-    },
-    {
-      icon = "   ",
-      icon_hl = { fg = colors.blue  },
-      desc = "Find  word                              ",
-      shortcut = "SPC f b",
-      action = "Telescope live_grep",
-    },
-  }
+    config = {
+      week_header = {
+        enable = false,
+      },
+      shortcut = {
+        {
+          desc = "   Update",
+          -- desc_hl = { fg = colors.red },
+          -- group = "Lazy",
+          action = "Lazy update",
+          key = "u",
+        },
+        {
+          desc = "   Sync",
+          -- desc_hl = { fg = colors.orange },
+          -- group = "Lazy",
+          action = "Lazy sync",
+          key = "s",
+        },
+        {
+          desc = "   Mason",
+          -- desc_hl = { fg = colors.yellow },
+          -- group = "Mason",
+          action = "Mason",
+          key = "m",
+        },
+        {
+          desc = "   Find File",
+          -- desc_hl = { fg = colors.green },
+          -- group = "Telescope",
+          action = "Telescope find_files",
+          key = "f",
+        },
+      },
+      project = { limit = 5, icon = " " },
+      mru = { limit = 5, icon = " " },
+    }
+  })
 end
 
 function config.nvim_tree()
   require("nvim-tree").setup({
+    disable_netrw = false,
+    hijack_cursor = true,
+    hijack_netrw = true,
     sort_by = "type",
     view = {
       width = 25,
