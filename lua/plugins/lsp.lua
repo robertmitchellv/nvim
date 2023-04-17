@@ -1,227 +1,127 @@
 return {
-
-  { "nvim-neotest/neotest",
-    dependencies = { "nvim-neotest/neotest-python" },
-    config = function()
-      require("neotest").setup {
-        adapters = {
-          require("neotest-python")
-        }
-      }
-    end,
-    keys = {
-      { "<leader>dtt", ":lua require'neotest'.run.run({strategy = 'dap'})<cr>", desc = "test" },
-      { "<leader>dts", ":lua require'neotest'.run.stop()<cr>", desc = "stop test" },
-      { "<leader>dta", ":lua require'neotest'.run.attach()<cr>", desc = "attach test" },
-      { "<leader>dtf", ":lua require'neotest'.run.run(vim.fn.expand('%'))<cr>", desc = "test file" },
-      { "<leader>dts", ":lua require'neotest'.summary.toggle()<cr>", desc = "test summary" },
-    }
-  },
-
-  -- debug adapter protocol
-  { 'mfussenegger/nvim-dap',
-    dependencies = {
-      { 'rcarriga/nvim-dap-ui',
-        config = function()
-          vim.fn.sign_define('DapBreakpoint', { text = '🦦', texthl = '', linehl = '', numhl = '' })
-          require("dapui").setup()
-        end
-      },
-      { 'mfussenegger/nvim-dap-python',
-        config = function()
-          require('dap-python').setup()
-          require('dap.ext.vscode').load_launchjs('launch.json')
-        end
-      },
-    },
-    keys = {
-      { "<leader>db", ":lua require'dap'.toggle_breakpoint()<cr>", desc = "debug breakpoint" },
-      { "<leader>dc", ": lua require'dap'.continue()<cr>", desc = "debug" },
-      { "<leader>do", ": lua require'dap'.step_over()<cr>", desc = "debug over" },
-      { "<leader>di", ": lua require'dap'.step_into()<cr>", desc = "debug into" },
-      { "<leader>dr", ": lua require'dap'.repl_open()<cr>", desc = "debug repl" },
-      { "<leader>du", ": lua require'dapui'.toggle()<cr>", desc = "debug into" },
-    },
-  },
-  { 'neovim/nvim-lspconfig',
-    event = "BufReadPre",
-    dependencies = {
-      { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
-      { "folke/neodev.nvim", config = true },
-      { "williamboman/mason.nvim" },
-      { "williamboman/mason-lspconfig.nvim",
-        config = {
-          automatic_installation = true,
-        }
-      },
+  "neovim/nvim-lspconfig",
+  event = { "BufReadPre", "BufNewFile" },
+  dependencies = {
+    { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
+    { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
+    "mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+    {
       "hrsh7th/cmp-nvim-lsp",
+      cond = function()
+        return require("lazyvim.util").has("nvim-cmp")
+      end,
     },
-    config = function()
-      -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
-      require("neodev").setup()
-
-      local lspconfig = require('lspconfig')
-      local cmp_nvim_lsp = require('cmp_nvim_lsp')
-      local configs = require 'lspconfig.configs'
-      local util = require("lspconfig.util")
-
-      require("mason").setup()
-      require("mason-lspconfig").setup({
-        automatic_installation = true
-      })
-
-      local on_attach = function(client, bufnr)
-        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-
-        local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-        local opts = { noremap = true, silent = true }
-
-        buf_set_keymap('n', 'gD', '<cmd>Telescope lsp_type_definitions<CR>', opts)
-        buf_set_keymap('n', 'gd', '<cmd>Telescope lsp_definitions<CR>', opts)
-        buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        buf_set_keymap('n', 'gh', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-        buf_set_keymap('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts)
-        buf_set_keymap('n', 'gr', '<cmd>Telescope lsp_references<CR>', opts)
-        buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-        buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-        buf_set_keymap('n', '<leader>ll', '<cmd>lua vim.lsp.codelens.run()<cr>', opts)
-        client.server_capabilities.document_formatting = true
-      end
-
-
-      local on_attach2 = function(client, bufnr)
-        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-
-        local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-        local opts = { noremap = true, silent = true }
-
-        buf_set_keymap('n', 'gD', '<cmd>Telescope lsp_type_definitions<CR>', opts)
-        buf_set_keymap('n', 'gh', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-        buf_set_keymap('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts)
-        buf_set_keymap('n', 'gr', '<cmd>Telescope lsp_references<CR>', opts)
-        buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-        buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-        buf_set_keymap('n', '<leader>ll', '<cmd>lua vim.lsp.codelens.run()<cr>', opts)
-        client.server_capabilities.document_formatting = true
-      end
-
-      local lsp_flags = {
-        allow_incremental_sync = true,
-        debounce_text_changes = 150,
-      }
-
-      vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = true,
-        signs = true,
-        underline = true,
-        update_in_insert = false,
-      })
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover,
-        { border = require 'misc.style'.border })
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help,
-        { border = require 'misc.style'.border })
-
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-      capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-      -- also needs:
-      -- $home/.config/marksman/config.toml :
-      -- [core]
-      -- markdown.file_extensions = ["md", "markdown", "qmd"]
-      lspconfig.marksman.setup {
-        on_attach = on_attach2,
-        capabilities = capabilities,
-        filetypes = { 'markdown', 'quarto' },
-        root_dir = util.root_pattern(".git", ".marksman.toml", "_quarto.yml"),
-      }
-
-      lspconfig.r_language_server.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = lsp_flags
-      }
-
-      lspconfig.emmet_ls.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = lsp_flags
-      }
-
-      lspconfig.cssls.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = lsp_flags
-      }
-
-      local function strsplit(s, delimiter)
-        local result = {}
-        for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
-          table.insert(result, match)
-        end
-        return result
-      end
-
-      local function get_quarto_resource_path()
-        local f = assert(io.popen('quarto --paths', 'r'))
-        local s = assert(f:read('*a'))
-        f:close()
-        return strsplit(s, '\n')[2]
-      end
-
-      local lua_library_files = vim.api.nvim_get_runtime_file("", true)
-      local resource_path = get_quarto_resource_path()
-      table.insert(lua_library_files, resource_path .. '/lua-types')
-      local lua_plugin_paths = {}
-      table.insert(lua_plugin_paths, resource_path .. '/lua-plugin/plugin.lua')
-
-      lspconfig.sumneko_lua.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = lsp_flags,
+  },
+  ---@class PluginLspOpts
+  opts = {
+    -- options for vim.diagnostic.config()
+    diagnostics = {
+      underline = true,
+      update_in_insert = false,
+      virtual_text = { spacing = 4, prefix = "●" },
+      severity_sort = true,
+    },
+    -- Automatically format on save
+    autoformat = true,
+    -- options for vim.lsp.buf.format
+    -- `bufnr` and `filter` is handled by the LazyVim formatter,
+    -- but can be also overridden when specified
+    format = {
+      formatting_options = nil,
+      timeout_ms = nil,
+    },
+    -- LSP Server Settings
+    ---@type lspconfig.options
+    servers = {
+      jsonls = {},
+      lua_ls = {
+        -- mason = false, -- set to false if you don't want this server to be installed with mason
         settings = {
           Lua = {
-            completion = {
-              callSnippet = "Replace"
-            },
-            runtime = {
-              version = 'LuaJIT',
-              plugin = lua_plugin_paths[1],
-            },
-            diagnostics = {
-              globals = { 'vim', 'quarto', 'pandoc', 'io', 'string', 'print', 'require', 'table' },
-              disable = { 'trailing-space' },
-            },
             workspace = {
-              library = lua_library_files,
               checkThirdParty = false,
             },
-            telemetry = {
-              enable = false,
+            completion = {
+              callSnippet = "Replace",
             },
           },
         },
-      }
+      },
+    },
+    -- you can do any additional lsp server setup here
+    -- return true if you don't want this server to be setup with lspconfig
+    ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
+    setup = {
+      -- example to setup with typescript.nvim
+      -- tsserver = function(_, opts)
+      --   require("typescript").setup({ server = opts })
+      --   return true
+      -- end,
+      -- Specify * to use this function as a fallback for any server
+      -- ["*"] = function(server, opts) end,
+    },
+  },
+  ---@param opts PluginLspOpts
+  config = function(_, opts)
+    -- setup autoformat
+    require("lazyvim.plugins.lsp.format").autoformat = opts.autoformat
+    -- setup formatting and keymaps
+    require("lazyvim.util").on_attach(function(client, buffer)
+      require("lazyvim.plugins.lsp.format").on_attach(client, buffer)
+      require("lazyvim.plugins.lsp.keymaps").on_attach(client, buffer)
+    end)
 
-      lspconfig.pyright.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = lsp_flags,
-        root_dir = function(fname)
-          return util.root_pattern(".git", "setup.py", "setup.cfg", "pyproject.toml", "requirements.txt")(fname) or
-              util.path.dirname(fname)
-        end
-      }
-
-      lspconfig.julials.setup {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = lsp_flags,
-      }
+    -- diagnostics
+    for name, icon in pairs(require("lazyvim.config").icons.diagnostics) do
+      name = "DiagnosticSign" .. name
+      vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
     end
-  }
+    vim.diagnostic.config(opts.diagnostics)
+
+    local servers = opts.servers
+    local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+    local function setup(server)
+      local server_opts = vim.tbl_deep_extend("force", {
+        capabilities = vim.deepcopy(capabilities),
+      }, servers[server] or {})
+
+      if opts.setup[server] then
+        if opts.setup[server](server, server_opts) then
+          return
+        end
+      elseif opts.setup["*"] then
+        if opts.setup["*"](server, server_opts) then
+          return
+        end
+      end
+      require("lspconfig")[server].setup(server_opts)
+    end
+
+    -- get all the servers that are available thourgh mason-lspconfig
+    local have_mason, mlsp = pcall(require, "mason-lspconfig")
+    local all_mslp_servers = {}
+    if have_mason then
+      all_mslp_servers = vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
+    end
+
+    local ensure_installed = {} ---@type string[]
+    for server, server_opts in pairs(servers) do
+      if server_opts then
+        server_opts = server_opts == true and {} or server_opts
+        -- run manual setup if mason=false or if this is a server that cannot be installed with mason-lspconfig
+        if server_opts.mason == false or not vim.tbl_contains(all_mslp_servers, server) then
+          setup(server)
+        else
+          ensure_installed[#ensure_installed + 1] = server
+        end
+      end
+    end
+
+    if have_mason then
+      mlsp.setup({ ensure_installed = ensure_installed })
+      mlsp.setup_handlers({ setup })
+    end
+  end,
 }
