@@ -123,6 +123,12 @@ function config.dap()
   })
 end
 
+function config.nerdicons()
+  require("nerdicons").setup({
+    --
+  })
+end
+
 -- wait for PR from jmbuhr
 -- function config.femaco()
 --   require("femaco").setup({

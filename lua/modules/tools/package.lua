@@ -43,6 +43,10 @@ package({
   dependencies = { "mfussenegger/nvim-dap" }
 })
 
+package({
+  "nvimdev/nerdicons.nvim",
+  config = conf.nerdicons,
+})
 -- wait for PR from jmbuhr
 -- package({
 --   "AckslD/nvim-FeMaco.lua",

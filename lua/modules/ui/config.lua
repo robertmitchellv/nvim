@@ -6,7 +6,7 @@ function config.tokyonight()
   local tokyo = require("tokyonight")
   tokyo.setup({
     style = "storm",
-    transparent = false,
+    transparent = true,
     terminal_colors = true,
     styles = {
       comments = { italic = true },
@@ -29,7 +29,6 @@ function config.dashboard()
     theme = "hyper",
     preview = {
       command = "viu -b -h 12 -w 70",
-      -- command = "viu -h 12 -w 70",
       file_path = home .. "/.config/nvim/static/akira-banner-01.png",
       file_height = 12,
       file_width = 70,
@@ -40,29 +39,33 @@ function config.dashboard()
       },
       shortcut = {
         {
-          desc = "   Update",
-          -- desc_hl = { fg = colors.red },
+          icon = "  ",
+          -- icon_hl = { fg = colors.red },
+          desc = "lazy update",
           -- group = "Lazy",
           action = "Lazy update",
           key = "u",
         },
         {
-          desc = "   Sync",
-          -- desc_hl = { fg = colors.orange },
+          icon = "  ",
+          -- icon_hl = { fg = colors.orange },
+          desc = "lazy sync",
           -- group = "Lazy",
           action = "Lazy sync",
           key = "s",
         },
         {
-          desc = "   Mason",
-          -- desc_hl = { fg = colors.yellow },
+          icon = "  ",
+          -- icon_hl = { fg = colors.yellow },
+          desc = "open mason",
           -- group = "Mason",
           action = "Mason",
           key = "m",
         },
         {
-          desc = "   Find File",
-          -- desc_hl = { fg = colors.green },
+          icon = "  ",
+          -- icon_hl = { fg = colors.green },
+          desc = "find files",
           -- group = "Telescope",
           action = "Telescope find_files",
           key = "f",

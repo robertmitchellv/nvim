@@ -24,12 +24,12 @@ function config.mason_lspconfig()
       "julials",
       "lemminx", -- xml
       "ltex", -- latex
+      "lua_ls",
       "marksman", -- markdown
       "pyright",
       "r_language_server",
       "rust_analyzer",
       "sqlls",
-      "sumneko_lua", -- lua
       "taplo", -- toml
       "tailwindcss",
       "terraformls",
