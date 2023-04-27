@@ -2,6 +2,7 @@ return {
   "nvim-lualine/lualine.nvim",
   event = "VeryLazy",
   opts = function()
+    local Util = require("lazyvim.util")
     local icons = {
       left_bar = "▊ ",
       right_bar = " ▊",
@@ -104,7 +105,8 @@ return {
           statusline = {
             "dashboard",
             "alpha",
-            -- "neo-tree",
+            "neo-tree",
+            "lazy",
           },
         },
       },
@@ -112,19 +114,19 @@ return {
         -- these are to remove the defaults
         lualine_a = {},
         lualine_b = {},
-        lualine_c = {},
-        lualine_x = {},
         lualine_y = {},
         lualine_z = {},
+        lualine_c = {},
+        lualine_x = {},
       },
       inactive_sections = {
         -- these are to remove the defaults
         lualine_a = {},
         lualine_b = {},
-        lualine_c = {},
-        lualine_x = {},
         lualine_y = {},
         lualine_z = {},
+        lualine_c = {},
+        lualine_x = {},
       },
     }
 
@@ -145,7 +147,7 @@ return {
       color = function()
         return { fg = mode_color[vim.fn.mode()] }
       end,
-      padding = { left = 0, right = 1 }, -- We don"t need space before this
+      padding = { left = 0, right = 1 },
     })
 
     ins_left({
@@ -205,10 +207,32 @@ return {
       cond = function()
         return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
       end,
-      padding = { left = 1, right = 1 },
+      padding = { left = 2, right = 2 },
     })
 
     -- right side
+    ins_right({
+      function()
+        return require("noice").api.status.mode.get()
+      end,
+      cond = function()
+        return package.loaded["noice"] and require("noice").api.status.mode.has()
+      end,
+      color = Util.fg("Constant"),
+      padding = { left = 2, right = 2 },
+    })
+
+    ins_right({
+      function()
+        return icons.error .. require("dap").status()
+      end,
+      cond = function()
+        return package.loaded["dap"] and require("dap").status() ~= ""
+      end,
+      color = Util.fg("Debug"),
+      padding = { left = 2, right = 2 },
+    })
+
     -- diagnostics
     ins_right({
       "diagnostics",
@@ -246,11 +270,8 @@ return {
         return msg
       end,
       icon = icons.lsp_icon,
-      color = {
-        fg = colors.magenta,
-        gui = "bold",
-      },
-      padding = { left = 2, right = 2 },
+      color = { fg = colors.magenta, gui = "bold" },
+      padding = { left = 1, right = 2 },
     })
 
     -- os logo
@@ -261,18 +282,18 @@ return {
       color = function()
         return { fg = mode_color[vim.fn.mode()] }
       end,
-      padding = { left = 2, right = 0 },
+      padding = { left = 1, right = 0 },
     })
 
     -- right bar; color change with vim mode
     ins_right({
       function()
-        return icons.left_bar
+        return icons.right_bar
       end,
       color = function()
         return { fg = mode_color[vim.fn.mode()] }
       end,
-      padding = { left = 1 },
+      padding = { left = 1, right = 0 },
     })
     return config
   end,
