@@ -1,2 +1,12 @@
 # luarc from lua-language-server
 .luarc.json
+
+# from lazynvim starter
+tt.*
+.tests
+doc/tags
+debug
+.repro
+foo.*
+*.log
+data
