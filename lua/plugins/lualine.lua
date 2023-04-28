@@ -19,7 +19,8 @@ return {
       select = " ",
       terminal = " ",
       replace = " ",
-      status_right = " ",
+      status_right_pop = " ",
+      status_right_mac = " ",
     }
     local colors = require("tokyonight.colors").setup()
     local mode_color = {
@@ -277,7 +278,7 @@ return {
     -- os logo
     ins_right({
       function()
-        return icons.status_right
+        return icons.status_right_pop
       end,
       color = function()
         return { fg = mode_color[vim.fn.mode()] }

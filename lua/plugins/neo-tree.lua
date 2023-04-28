@@ -25,7 +25,7 @@ local icons = {
     untracked = " ",
     deleted = " ",
     ignored = " ",
-    conflict = " ",
+    conflict = "裂",
   },
 }
 
