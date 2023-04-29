@@ -21,8 +21,15 @@ return {
       replace = " ",
       status_right_pop = " ",
       status_right_mac = " ",
+      copilot = require("lazyvim.config").icons.kinds.Copilot,
     }
     local colors = require("tokyonight.colors").setup()
+    local copilot_colors = {
+      [""] = Util.fg("Special"),
+      ["Normal"] = Util.fg("Special"),
+      ["Warning"] = Util.fg("DiagnosticError"),
+      ["InProgress"] = Util.fg("DiagnosticWarn"),
+    }
     local mode_color = {
       -- normal
       n = colors.blue,
@@ -273,6 +280,22 @@ return {
       icon = icons.lsp_icon,
       color = { fg = colors.magenta, gui = "bold" },
       padding = { left = 1, right = 2 },
+    })
+
+    ins_right({
+      function()
+        local status = require("copilot.api").status.data
+        return icons.copilot .. (status.message or "")
+      end,
+      cond = function()
+        local ok, clients = pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
+        return ok and #clients > 0
+      end,
+      color = function()
+        local status = require("copilot.api").status.data
+        return copilot_colors[status.status] or copilot_colors[""]
+      end,
+      padding = { left = 1, right = 1 },
     })
 
     -- os logo
