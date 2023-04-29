@@ -9,6 +9,7 @@ return {
       sync = " ",
       mason = "  ",
       telescope = "  ",
+      exit = " ",
     }
     dashboard.setup({
       theme = "hyper",
@@ -39,6 +40,11 @@ return {
             -- group = "Telescope",
             action = "Telescope find_files",
             key = "f",
+          },
+          {
+            desc = icons.exit .. "exit",
+            action = ":q!",
+            key = "q",
           },
         },
         project = { limit = 5, icon = " " },
