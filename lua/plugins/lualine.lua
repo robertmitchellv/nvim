@@ -115,6 +115,7 @@ return {
             "alpha",
             "neo-tree",
             "lazy",
+            "mason",
           },
         },
       },
