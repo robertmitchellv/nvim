@@ -10,6 +10,10 @@ return {
     },
   },
   opts = {
+    background_colour = function()
+      local colors require("tokyonight.colors").setup()
+      return colors.bg
+    end,
     timeout = 3000,
     max_height = function()
       return math.floor(vim.o.lines * 0.75)
