@@ -1,12 +1,12 @@
 -- icons
 local icons = {
   dashboard = {
-      lazy = "󰒲 ",
-      update = " ",
-      sync = " ",
-      mason = "  ",
-      telescope = "  ",
-      exit = " ",
+    lazy = "󰒲 ",
+    update = " ",
+    sync = " ",
+    mason = "  ",
+    telescope = "  ",
+    exit = " ",
   },
   lualine = {
     left_bar = "▊ ",
@@ -57,7 +57,7 @@ local icons = {
       ignored = " ",
       conflict = "裂",
     },
-  }
+  },
 }
 
 -- plugins
@@ -82,7 +82,7 @@ return {
               key = "l",
             },
             {
-              desc = icons.dashboard.lazy .. icons.sync .. "sync",
+              desc = icons.dashboard.lazy .. icons.dashboard.sync .. "sync",
               action = "Lazy sync",
               key = "s",
             },
@@ -525,7 +525,8 @@ return {
     },
     opts = {
       background_colour = function()
-        local colors require("tokyonight.colors").setup()
+        local colors
+        require("tokyonight.colors").setup()
         return colors.bg
       end,
       timeout = 3000,
