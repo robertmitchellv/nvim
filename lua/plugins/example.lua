@@ -168,8 +168,8 @@ return {
     opts = function(_, opts)
       -- add tsx and treesitter
       vim.list_extend(opts.ensure_installed, {
-          "tsx",
-          "typescript",
+        "tsx",
+        "typescript",
       })
     end,
   },
@@ -263,5 +263,38 @@ return {
         end, { "i", "s" }),
       })
     end,
+  },
+},
+-- example of how i had quarto set up before
+-- i don't use it much anymore so i'm taking it out
+{
+  "quarto-dev/quarto-nvim",
+  dev = false,
+  config = function()
+    local quarto = require("quarto")
+    quarto.setup({
+      lspFeatures = {
+        enabled = true,
+        languages = { "r", "python", "julia", "bash" },
+        chunks = "curly",
+        diagnostics = {
+          enabled = true,
+          triggers = { "BufWritePost" },
+        },
+        completion = {
+          enabled = true,
+        },
+      },
+      keymap = {
+        hover = "K",
+        definition = "gd",
+        rename = "<leader>cr",
+        references = "gr",
+      },
+    })
+  end,
+  dependencies = {
+    { "jmbuhr/otter.nvim" },
+    { "hrsh7th/nvim-cmp" },
   },
 }
