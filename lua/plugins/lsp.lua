@@ -57,7 +57,6 @@ return {
         ltex = {},
         lua_ls = {},
         marksman = {},
-        r_language_server = {},
         ruff_lsp = {},
         rust_analyzer = {},
         spectral = {},
