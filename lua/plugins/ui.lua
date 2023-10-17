@@ -119,10 +119,10 @@ return {
       local Util = require("lazyvim.util")
       local colors = require("tokyonight.colors").setup()
       local copilot_colors = {
-        [""] = Util.fg("Special"),
-        ["Normal"] = Util.fg("Special"),
-        ["Warning"] = Util.fg("DiagnosticError"),
-        ["InProgress"] = Util.fg("DiagnosticWarn"),
+        [""] = Util.ui.fg("Special"),
+        ["Normal"] = Util.ui.fg("Special"),
+        ["Warning"] = Util.ui.fg("DiagnosticError"),
+        ["InProgress"] = Util.ui.fg("DiagnosticWarn"),
       }
       local mode_color = {
         -- normal
@@ -320,7 +320,7 @@ return {
         cond = function()
           return package.loaded["noice"] and require("noice").api.status.mode.has()
         end,
-        color = Util.fg("Constant"),
+        color = Util.ui.fg("Constant"),
         padding = { left = 2, right = 2 },
       })
 
@@ -331,7 +331,7 @@ return {
         cond = function()
           return package.loaded["dap"] and require("dap").status() ~= ""
         end,
-        color = Util.fg("Debug"),
+        color = Util.ui.fg("Debug"),
         padding = { left = 2, right = 2 },
       })
 
@@ -419,19 +419,20 @@ return {
 
   {
     "nvim-neo-tree/neo-tree.nvim",
-    optional = true,
+    branch = "v3.x",
+    cmd = "Neotree",
     opts = {
+      sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+      open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
       filesystem = {
         bind_to_cwd = false,
-        follow_current_file = true,
+        follow_current_file = { enabled = true },
         use_libuv_file_watcher = true,
+        never_show = { ".DS_Store" },
         filtered_items = {
           hide_dotfiles = false,
           hide_gitignored = false,
           hide_hidden = false,
-        },
-        never_show = {
-          ".DS_Store",
         },
       },
       window = {
@@ -470,6 +471,16 @@ return {
       },
     },
     config = function(_, opts)
+      local function on_move(data)
+        Util.lsp.on_rename(data.source, data.destination)
+      end
+
+      local events = require("neo-tree.events")
+      opts.event_handlers = opts.event_handlers or {}
+      vim.list_extend(opts.event_handlers, {
+        { event = events.FILE_MOVED, handler = on_move },
+        { event = events.FILE_RENAMED, handler = on_move },
+      })
       require("neo-tree").setup(opts)
       vim.api.nvim_create_autocmd("TermClose", {
         pattern = "*lazygit",

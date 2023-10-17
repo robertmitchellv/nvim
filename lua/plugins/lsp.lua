@@ -75,12 +75,12 @@ return {
   },
 
   -- lspsaga; not sure if i'll use it or not
-  {
-    "nvimdev/lspsaga.nvim",
-    config = function()
-      require("lspsaga").setup({
-        -- add your config value here
-      })
-    end,
-  },
+  -- {
+  --   "nvimdev/lspsaga.nvim",
+  --   config = function()
+  --     require("lspsaga").setup({
+  --       -- add your config value here
+  --     })
+  --   end,
+  -- },
 }
