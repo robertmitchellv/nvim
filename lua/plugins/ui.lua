@@ -505,9 +505,8 @@ return {
       },
     },
     opts = {
-      background_colour = function()
-        local colors
-        require("tokyonight.colors").setup()
+      background_color = function()
+        local colors = require("tokyonight.colors").setup()
         return colors.bg
       end,
       timeout = 3000,
@@ -534,11 +533,6 @@ return {
     lazy = true,
     opts = {
       style = "storm",
-      transparent = true,
-      styles = {
-        sidebars = "transparent",
-        floats = "transparent",
-      },
     },
   },
 
