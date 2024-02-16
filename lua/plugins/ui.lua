@@ -11,7 +11,7 @@ local icons = {
   lualine = {
     left_bar = "▊ ",
     right_bar = " ▊",
-    status_left = " ",
+    neovim_icon = " ",
     branch = "",
     add = " ",
     change = " ",
@@ -154,8 +154,8 @@ return {
       }
       local mode_icon = {
         -- normal
-        n = icons.lualine.status_left,
-        no = icons.lualine.status_left,
+        n = icons.lualine.neovim_icon,
+        no = icons.lualine.neovim_icon,
         -- insert
         i = icons.lualine.change,
         -- visual
@@ -175,11 +175,11 @@ return {
         ce = icons.lualine.terminal,
         ["!"] = icons.lualine.terminal,
         -- other
-        ic = icons.lualine.status_left,
-        r = icons.lualine.status_left,
-        rm = icons.lualine.status_left,
-        ["r?"] = icons.lualine.status_left,
-        t = icons.lualine.status_left,
+        ic = icons.lualine.neovim_icon,
+        r = icons.lualine.neovim_icon,
+        rm = icons.lualine.neovim_icon,
+        ["r?"] = icons.lualine.neovim_icon,
+        t = icons.lualine.neovim_icon,
       }
       local conditions = {
         buffer_not_empty = function()
@@ -551,5 +551,39 @@ return {
     opts = {
       colorscheme = "tokyonight",
     },
+  },
+  {
+    "echasnovski/mini.animate",
+    event = "VeryLazy",
+    opts = function()
+      -- don't use animate when scrolling with the mouse
+      local mouse_scrolled = false
+      for _, scroll in ipairs({ "Up", "Down" }) do
+        local key = "<ScrollWheel" .. scroll .. ">"
+        vim.keymap.set({ "", "i" }, key, function()
+          mouse_scrolled = true
+          return key
+        end, { expr = true })
+      end
+
+      local animate = require("mini.animate")
+      return {
+        resize = {
+          timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
+        },
+        scroll = {
+          timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
+          subscroll = animate.gen_subscroll.equal({
+            predicate = function(total_scroll)
+              if mouse_scrolled then
+                mouse_scrolled = false
+                return false
+              end
+              return total_scroll > 1
+            end,
+          }),
+        },
+      }
+    end,
   },
 }
