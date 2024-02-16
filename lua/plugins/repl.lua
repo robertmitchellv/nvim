@@ -9,8 +9,7 @@ return {
         scratch = true,
         ft = "REPL",
         metas = {
-          python = { cmd = "python", formatter = yarepl.formatter.trim_empty_lines },
-          ipython = { cmd = "ipython", formatter = yarepl.formatter.bracketed_pasting },
+          python = { cmd = "bpython", formatter = yarepl.formatter.trim_empty_lines },
           radian = { cmd = "radian", formatter = yarepl.formatter.bracketed_pasting },
           julia = { cmd = "julia", formatter = yarepl.formatter.bracketed_pasting },
         },

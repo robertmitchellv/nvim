@@ -24,9 +24,13 @@ local icons = {
     select = " ",
     terminal = " ",
     replace = " ",
+    copilot_enabled = " ",
+    copilot_sleep = "󰒲 ",
+    copilot_disabled = " ",
+    copilot_warning = " ",
+    copilot_unknown = " ",
     status_right_pop = " ",
     status_right_mac = " ",
-    copilot = require("lazyvim.config").icons.kinds.Copilot,
   },
   neotree = {
     default = " ",
@@ -115,15 +119,10 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
+    dependencies = { "AndreM222/copilot-lualine" },
     opts = function()
       local Util = require("lazyvim.util")
       local colors = require("tokyonight.colors").setup()
-      local copilot_colors = {
-        [""] = Util.ui.fg("Special"),
-        ["Normal"] = Util.ui.fg("Special"),
-        ["Warning"] = Util.ui.fg("DiagnosticError"),
-        ["InProgress"] = Util.ui.fg("DiagnosticWarn"),
-      }
       local mode_color = {
         -- normal
         n = colors.blue,
@@ -377,18 +376,29 @@ return {
       })
 
       ins_right({
-        function()
-          local status = require("copilot.api").status.data
-          return icons.lualine.copilot .. (status.message or "")
-        end,
-        cond = function()
-          local ok, clients = pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
-          return ok and #clients > 0
-        end,
-        color = function()
-          local status = require("copilot.api").status.data
-          return copilot_colors[status.status] or copilot_colors[""]
-        end,
+        "copilot",
+        symbols = {
+          status = {
+            icons = {
+              enabled = icons.copilot_enabled,
+              sleep = icons.copilot_sleep,
+              disabled = icons.copilot_disabled,
+              warning = icons.copiolt_warning,
+              unknown = icons.copilot_unknown,
+            },
+            hl = {
+              enabled = colors.green,
+              sleep = colors.green,
+              disabled = colors.error,
+              warning = colors.warning,
+              unknown = colors.warning,
+            },
+          },
+          spinners = require("copilot-lualine.spinners").dots,
+          spinner_color = colors.green,
+        },
+        show_colors = true,
+        show_loading = true,
         padding = { left = 1, right = 1 },
       })
 
