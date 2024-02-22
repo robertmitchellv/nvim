@@ -11,7 +11,7 @@ local icons = {
   lualine = {
     left_bar = "▊ ",
     right_bar = " ▊",
-    status_left = " ",
+    neovim_icon = " ",
     branch = "",
     add = " ",
     change = " ",
@@ -24,9 +24,13 @@ local icons = {
     select = " ",
     terminal = " ",
     replace = " ",
+    copilot_enabled = " ",
+    copilot_sleep = "󰒲 ",
+    copilot_disabled = " ",
+    copilot_warning = " ",
+    copilot_unknown = " ",
     status_right_pop = " ",
     status_right_mac = " ",
-    copilot = require("lazyvim.config").icons.kinds.Copilot,
   },
   neotree = {
     default = " ",
@@ -115,15 +119,10 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
+    dependencies = { "AndreM222/copilot-lualine" },
     opts = function()
       local Util = require("lazyvim.util")
       local colors = require("tokyonight.colors").setup()
-      local copilot_colors = {
-        [""] = Util.ui.fg("Special"),
-        ["Normal"] = Util.ui.fg("Special"),
-        ["Warning"] = Util.ui.fg("DiagnosticError"),
-        ["InProgress"] = Util.ui.fg("DiagnosticWarn"),
-      }
       local mode_color = {
         -- normal
         n = colors.blue,
@@ -155,8 +154,8 @@ return {
       }
       local mode_icon = {
         -- normal
-        n = icons.lualine.status_left,
-        no = icons.lualine.status_left,
+        n = icons.lualine.neovim_icon,
+        no = icons.lualine.neovim_icon,
         -- insert
         i = icons.lualine.change,
         -- visual
@@ -176,11 +175,11 @@ return {
         ce = icons.lualine.terminal,
         ["!"] = icons.lualine.terminal,
         -- other
-        ic = icons.lualine.status_left,
-        r = icons.lualine.status_left,
-        rm = icons.lualine.status_left,
-        ["r?"] = icons.lualine.status_left,
-        t = icons.lualine.status_left,
+        ic = icons.lualine.neovim_icon,
+        r = icons.lualine.neovim_icon,
+        rm = icons.lualine.neovim_icon,
+        ["r?"] = icons.lualine.neovim_icon,
+        t = icons.lualine.neovim_icon,
       }
       local conditions = {
         buffer_not_empty = function()
@@ -377,18 +376,29 @@ return {
       })
 
       ins_right({
-        function()
-          local status = require("copilot.api").status.data
-          return icons.lualine.copilot .. (status.message or "")
-        end,
-        cond = function()
-          local ok, clients = pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
-          return ok and #clients > 0
-        end,
-        color = function()
-          local status = require("copilot.api").status.data
-          return copilot_colors[status.status] or copilot_colors[""]
-        end,
+        "copilot",
+        symbols = {
+          status = {
+            icons = {
+              enabled = icons.copilot_enabled,
+              sleep = icons.copilot_sleep,
+              disabled = icons.copilot_disabled,
+              warning = icons.copiolt_warning,
+              unknown = icons.copilot_unknown,
+            },
+            hl = {
+              enabled = colors.green,
+              sleep = colors.green,
+              disabled = colors.error,
+              warning = colors.warning,
+              unknown = colors.warning,
+            },
+          },
+          spinners = require("copilot-lualine.spinners").dots,
+          spinner_color = colors.green,
+        },
+        show_colors = true,
+        show_loading = true,
         padding = { left = 1, right = 1 },
       })
 
@@ -541,5 +551,39 @@ return {
     opts = {
       colorscheme = "tokyonight",
     },
+  },
+  {
+    "echasnovski/mini.animate",
+    event = "VeryLazy",
+    opts = function()
+      -- don't use animate when scrolling with the mouse
+      local mouse_scrolled = false
+      for _, scroll in ipairs({ "Up", "Down" }) do
+        local key = "<ScrollWheel" .. scroll .. ">"
+        vim.keymap.set({ "", "i" }, key, function()
+          mouse_scrolled = true
+          return key
+        end, { expr = true })
+      end
+
+      local animate = require("mini.animate")
+      return {
+        resize = {
+          timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
+        },
+        scroll = {
+          timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
+          subscroll = animate.gen_subscroll.equal({
+            predicate = function(total_scroll)
+              if mouse_scrolled then
+                mouse_scrolled = false
+                return false
+              end
+              return total_scroll > 1
+            end,
+          }),
+        },
+      }
+    end,
   },
 }
