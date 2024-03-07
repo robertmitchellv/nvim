@@ -85,14 +85,39 @@ return {
         ltex = {},
         lua_ls = {},
         marksman = {},
-        ruff_lsp = {},
+        ruff_lsp = {
+          keys = {
+            {
+              "<leader>co",
+              function()
+                vim.lsp.buf.code_action({
+                  apply = true,
+                  context = {
+                    only = { "source.organizeImports" },
+                    diagnostics = {},
+                  },
+                })
+              end,
+              desc = "Organizae Imports",
+            },
+          },
+        },
         rust_analyzer = {},
         sqlls = {},
         terraformls = {},
         tsserver = {},
         yamlls = {},
       },
-      setup = {},
+      setup = {
+        ruff_lsp = function()
+          require("lazyvim.util").lsp.on_attach(function(client, _)
+            if client.name == "ruff_lsp" then
+              -- disable hover in favor of Pyright
+              -- client.server_capabilities.hoverProvider = false
+            end
+          end)
+        end,
+      },
     },
   },
 
