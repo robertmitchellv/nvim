@@ -14,10 +14,25 @@ return {
   },
   {
     "stevearc/conform.nvim",
-    optional = true,
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
     opts = {
       formatters_by_ft = {
-        ["python"] = { "ruff_format" },
+        javascript = { "prettier" },
+        typescript = { "prettier" },
+        css = { "prettier" },
+        html = { "prettier" },
+        json = { "prettier" },
+        yaml = { "prettier" },
+        markdown = { "prettier" },
+        lua = { "stylua" },
+        python = {
+          "reorder-python-imports",
+          "black",
+          "ruff_fix",
+          "ruff_format",
+        },
+        toml = { "taplo" },
       },
     },
   },
