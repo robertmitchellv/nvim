@@ -8,9 +8,9 @@
 
 <br>
 
-Started with [glepnir's](https://github.com/glepnir) `cosynvim`, which was recently renamed to `dope` and is now a part of [nvimdev](https://github.com/nvimdev/). There was a big change from using `packer` a while back to `lazy.nvim`, which was interesting to work through but a lot of it I didn't really understand because I was just using the framework and not putting it together myself. 
+Started with [glepnir's](https://github.com/glepnir) `cosynvim`, which was recently renamed to `dope` and is now a part of [nvimdev](https://github.com/nvimdev/). There was a big change from using `packer` a while back to `lazy.nvim`, which was interesting to work through but a lot of it I didn't really understand because I was just using the framework and not putting it together myself.
 
-So, I'm gradually moving towards having most of my `~/.config/` as a repo with all dots and config for wezterm, starship, etc that powers my personal development environment all in one place (sort of like [folke's](https://github.com/folke) dots; I like that set up a lot). For now, I've changed the configuration a lot and spent a good deal of time trying to make what I had work in LazyVim with varying degrees of success. 
+So, I'm gradually moving towards having most of my `~/.config/` as a repo with all dots and config for wezterm, starship, etc that powers my personal development environment all in one place (sort of like [folke's](https://github.com/folke) dots; I like that set up a lot). For now, I've changed the configuration a lot and spent a good deal of time trying to make what I had work in LazyVim with varying degrees of success.
 
 ## Geting started
 
@@ -22,24 +22,23 @@ a good idea to check first, otherwise you can grab what you need from the neovim
 Currently I'm using `Pop!_OS`, and the version of neovim from `apt` isn't recent enough, so for
 linux I need to grab it from the repo releases page.
 
-__linux__
+**linux**
+
 ```bash
 gh --repo neovim/neovim release download stable --pattern='*.deb'
 sudo apt install ./nvim-linux64.deb
 ```
 
-__update on linux__
+**update on linux**
 
 ```bash
-#    --> get new neovim version
       update-neovim() {
         # Get the installed version of neovim
         local installed_version=$(nvim --version | head -n 1 | awk '{print $2}')
 
         # Get the latest release version of neovim from GitHub
         local latest_release=$(gh --repo neovim/neovim release view --json tagName,name)
-
-        local latest_version_name=$(echo "$latest_release" | jq -r '.name')
+        local latest_version_name=$(echo "$latest_release" | jq -r '.name' | sed 's/^Nvim //')
         local latest_version_tag=$(echo "$latest_release" | jq -r '.tagName')
 
         # If the latest version tag is "stable", get the version number from the release list
@@ -66,7 +65,8 @@ __update on linux__
 
 On the macbook pro; can use `homebrew`
 
-__macOS__
+**macOS**
+
 ```bash
 brew install nvim
 ```
@@ -84,4 +84,3 @@ gh auth login
 ```bash
 gh repo clone robertmitchellv/nvim ~/.config/nvim
 ```
-
