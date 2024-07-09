@@ -5,12 +5,9 @@ return {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
-        "ansible-language-server",
-        "ansible-lint",
         "astro-language-server",
         "bash-language-server",
         "beautysh",
-        "black",
         "clangd",
         "cmake-language-server",
         "css-lsp",
@@ -21,10 +18,8 @@ return {
         "docker-compose-language-service",
         "dockerfile-language-server",
         "fixjson",
-        "flake8",
         "gh",
         "gitlint",
-        "gopls",
         "grammarly-languageserver",
         "helm-ls",
         "html-lsp",
@@ -75,7 +70,6 @@ return {
         cssls = {},
         denols = {},
         dockerls = {},
-        gopls = {},
         grammarly = {},
         helm_ls = {},
         html = {},
@@ -120,14 +114,4 @@ return {
       },
     },
   },
-
-  -- lspsaga; not sure if i'll use it or not
-  -- {
-  --   "nvimdev/lspsaga.nvim",
-  --   config = function()
-  --     require("lspsaga").setup({
-  --       -- add your config value here
-  --     })
-  --   end,
-  -- },
 }

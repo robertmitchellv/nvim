@@ -27,8 +27,6 @@ return {
         markdown = { "prettier" },
         lua = { "stylua" },
         python = {
-          "reorder-python-imports",
-          "black",
           "ruff_fix",
           "ruff_format",
         },
