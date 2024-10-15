@@ -119,7 +119,7 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
-    dependencies = { "AndreM222/copilot-lualine" },
+    -- dependencies = { "AndreM222/copilot-lualine" },
     opts = function()
       local Util = require("lazyvim.util")
       local colors = require("tokyonight.colors").setup()
@@ -375,32 +375,32 @@ return {
         padding = { left = 1, right = 2 },
       })
 
-      ins_right({
-        "copilot",
-        symbols = {
-          status = {
-            icons = {
-              enabled = icons.copilot_enabled,
-              sleep = icons.copilot_sleep,
-              disabled = icons.copilot_disabled,
-              warning = icons.copiolt_warning,
-              unknown = icons.copilot_unknown,
-            },
-            hl = {
-              enabled = colors.green,
-              sleep = colors.green,
-              disabled = colors.error,
-              warning = colors.warning,
-              unknown = colors.warning,
-            },
-          },
-          spinners = require("copilot-lualine.spinners").dots,
-          spinner_color = colors.green,
-        },
-        show_colors = true,
-        show_loading = true,
-        padding = { left = 1, right = 1 },
-      })
+      -- ins_right({
+      --   "copilot",
+      --   symbols = {
+      --     status = {
+      --       icons = {
+      --         enabled = icons.copilot_enabled,
+      --         sleep = icons.copilot_sleep,
+      --         disabled = icons.copilot_disabled,
+      --         warning = icons.copiolt_warning,
+      --         unknown = icons.copilot_unknown,
+      --       },
+      --       hl = {
+      --         enabled = colors.green,
+      --         sleep = colors.green,
+      --         disabled = colors.error,
+      --         warning = colors.warning,
+      --         unknown = colors.warning,
+      --       },
+      --     },
+      --     spinners = require("copilot-lualine.spinners").dots,
+      --     spinner_color = colors.green,
+      --   },
+      --   show_colors = true,
+      --   show_loading = true,
+      --   padding = { left = 1, right = 1 },
+      -- })
 
       -- os logo
       ins_right({
