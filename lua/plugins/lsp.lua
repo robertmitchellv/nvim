@@ -5,29 +5,47 @@ return {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
-        "ansible-lint",
+        "bash-language-server",
         "beautysh",
-        "black",
+        "css-lsp",
         "curlylint",
+        "debugpy",
+        "deno",
         "docformatter",
+        "docker-compose-language-service",
+        "dockerfile-language-server",
         "fixjson",
-        "flake8",
         "gh",
         "gitlint",
+        "grammarly-languageserver",
+        "helm-ls",
+        "html-lsp",
         "jq",
+        "json-lsp",
+        "julia-lsp",
+        "lemminx",
+        "ltex-ls",
+        "lua-language-server",
         "luacheck",
         "luaformatter",
-        "nginx-language-server",
+        "marksman",
         "prettier",
         "ruff",
-        "rustfmt",
-        "rustywind",
+        "ruff-lsp",
         "shellcheck",
+        "shfmt",
+        "sqlls",
         "stylua",
+        "taplo",
+        "terraform-ls",
+        "typescript-language-server",
+        "vim-language-server",
         "write-good",
         "xmlformatter",
+        "yaml-language-server",
         "yamllint",
         "yq",
+        "zls",
       },
     },
   },
@@ -39,14 +57,10 @@ return {
       ---@type lspconfig.options
       servers = {
         ansiblels = {},
-        astro = {},
         bashls = {},
-        clangd = {},
-        cmake = {},
         cssls = {},
         denols = {},
         dockerls = {},
-        gopls = {},
         grammarly = {},
         helm_ls = {},
         html = {},
@@ -56,24 +70,38 @@ return {
         ltex = {},
         lua_ls = {},
         marksman = {},
-        ruff_lsp = {},
-        rust_analyzer = {},
+        ruff_lsp = {
+          keys = {
+            {
+              "<leader>co",
+              function()
+                vim.lsp.buf.code_action({
+                  apply = true,
+                  context = {
+                    only = { "source.organizeImports" },
+                    diagnostics = {},
+                  },
+                })
+              end,
+              desc = "Organizae Imports",
+            },
+          },
+        },
         sqlls = {},
         terraformls = {},
         tsserver = {},
         yamlls = {},
       },
-      setup = {},
+      setup = {
+        ruff_lsp = function()
+          require("lazyvim.util").lsp.on_attach(function(client, _)
+            if client.name == "ruff_lsp" then
+              -- disable hover in favor of Pyright
+              -- client.server_capabilities.hoverProvider = false
+            end
+          end)
+        end,
+      },
     },
   },
-
-  -- lspsaga; not sure if i'll use it or not
-  -- {
-  --   "nvimdev/lspsaga.nvim",
-  --   config = function()
-  --     require("lspsaga").setup({
-  --       -- add your config value here
-  --     })
-  --   end,
-  -- },
 }

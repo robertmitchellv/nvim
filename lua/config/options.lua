@@ -2,5 +2,11 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 local opt = vim.opt
+local cmd = vim.cmd
 
+-- opts
 opt.clipboard = "unnamedplus"
+
+-- cmds
+cmd("highlight GitBlame cterm=italic gui=italic guifg=#565f89 guibg=#292e42")
+cmd("hi link Keyword GitBlame")
