@@ -5,11 +5,8 @@ return {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
-        "astro-language-server",
         "bash-language-server",
         "beautysh",
-        "clangd",
-        "cmake-language-server",
         "css-lsp",
         "curlylint",
         "debugpy",
@@ -35,11 +32,8 @@ return {
         "prettier",
         "ruff",
         "ruff-lsp",
-        "rust-analyzer",
-        "rustywind",
         "shellcheck",
         "shfmt",
-        "spectral-language-server",
         "sqlls",
         "stylua",
         "taplo",
@@ -63,10 +57,7 @@ return {
       ---@type lspconfig.options
       servers = {
         ansiblels = {},
-        astro = {},
         bashls = {},
-        clangd = {},
-        cmake = {},
         cssls = {},
         denols = {},
         dockerls = {},
@@ -96,7 +87,6 @@ return {
             },
           },
         },
-        rust_analyzer = {},
         sqlls = {},
         terraformls = {},
         tsserver = {},
