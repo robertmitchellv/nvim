@@ -319,7 +319,7 @@ return {
         cond = function()
           return package.loaded["noice"] and require("noice").api.status.mode.has()
         end,
-        color = Util.ui.fg("Constant"),
+        color = { fg = Snacks.util.color("Constant") },
         padding = { left = 2, right = 2 },
       })
 
@@ -330,7 +330,7 @@ return {
         cond = function()
           return package.loaded["dap"] and require("dap").status() ~= ""
         end,
-        color = Util.ui.fg("Debug"),
+        color = { fg = Snacks.util.color("Debug") },
         padding = { left = 2, right = 2 },
       })
 
