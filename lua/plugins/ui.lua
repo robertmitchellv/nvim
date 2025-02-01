@@ -66,7 +66,6 @@ local icons = {
 
 -- plugins
 return {
-
   {
     "nvimdev/dashboard-nvim",
     event = "VimEnter",
@@ -545,7 +544,20 @@ return {
       style = "storm",
     },
   },
-
+  {
+    "f-person/git-blame.nvim",
+    config = function()
+      require("gitblame").setup({
+        message_template = "    <author>   <date>   <summary>",
+        date_format = "%r",
+        message_when_not_committed = "  󱋽  uncommitted",
+        -- added custom highlight group to LazyVim's options.lua:
+        -- :highlight GitBlame cterm=italic gui=italic guifg=#565f89 guibg=#292e42
+        -- :hi link Keyword GitBlame
+        highlight_group = "GitBlame",
+      })
+    end,
+  },
   {
     "LazyVim/LazyVim",
     opts = {
