@@ -7,7 +7,7 @@ return {
       "hrsh7th/cmp-nvim-lsp",
     },
     config = function()
-      -- 1. Set up Mason first
+      -- 1. set up Mason first
       local mason = require("mason")
       mason.setup({
         ui = {
@@ -20,7 +20,7 @@ return {
         },
       })
 
-      -- 2. Set up mason-lspconfig
+      -- 2. set up mason-lspconfig
       local mason_lspconfig = require("mason-lspconfig")
       mason_lspconfig.setup({
         ensure_installed = {
@@ -42,7 +42,7 @@ return {
         automatic_installation = true,
       })
 
-      -- 3. Additional Mason packages that aren't LSP servers
+      -- 3. additional Mason packages that aren't LSP servers
       local registry = require("mason-registry")
       local function ensure_installed()
         local packages = {
@@ -62,7 +62,7 @@ return {
         ensure_installed()
       end)
 
-      -- 4. Set up LSP keymaps
+      -- 4. set up LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         desc = "LSP actions",
         callback = function(event)
@@ -94,13 +94,13 @@ return {
         end,
       })
 
-      -- 5. Set up capabilities
+      -- 5. set up capabilities
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- 6. Configure individual servers
+      -- 6. configure individual servers
       local lspconfig = require("lspconfig")
 
-      -- Configure each server
+      -- configure each server
       lspconfig.ansiblels.setup({ capabilities = capabilities })
       lspconfig.bashls.setup({ capabilities = capabilities })
       lspconfig.cssls.setup({ capabilities = capabilities })
