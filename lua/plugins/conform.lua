@@ -9,6 +9,7 @@ return {
         http = { "kulala_ls" },
         javascript = { "prettierd", "eslint_d" },
         javascriptreact = { "prettierd" },
+        jinja = { "djlint" },
         json = { "prettierd" },
         lua = { "stylua" },
         markdown = { "markdownlint" },
