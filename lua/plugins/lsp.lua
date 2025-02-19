@@ -30,6 +30,7 @@ return {
           "docker_compose_language_service",
           "dockerls",
           "html",
+          "jinja_lsp",
           "jsonls",
           "lemminx",
           "lua_ls",
@@ -46,8 +47,8 @@ return {
       local registry = require("mason-registry")
       local function ensure_installed()
         local packages = {
+          "djlint",
           "prettierd",
-          "curlylint",
         }
 
         for _, package in ipairs(packages) do
@@ -107,6 +108,7 @@ return {
       lspconfig.docker_compose_language_service.setup({ capabilities = capabilities })
       lspconfig.dockerls.setup({ capabilities = capabilities })
       lspconfig.html.setup({ capabilities = capabilities })
+      lspconfig.jinja_lsp.setup({ capabilities = capabilities })
       lspconfig.jsonls.setup({ capabilities = capabilities })
       lspconfig.kulala_ls.setup({ capabilities = capabilities })
       lspconfig.lua_ls.setup({

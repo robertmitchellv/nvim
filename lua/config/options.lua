@@ -10,3 +10,12 @@ opt.clipboard = "unnamedplus"
 -- cmds
 cmd("highlight GitBlame cterm=italic gui=italic guifg=#565f89 guibg=#292e42")
 cmd("hi link Keyword GitBlame")
+
+-- add filetype detection for Jinja files
+vim.filetype.add({
+  extension = {
+    jinja = "jinja",
+    jinja2 = "jinja",
+    j2 = "jinja",
+  },
+})
