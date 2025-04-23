@@ -35,6 +35,7 @@ return {
           "lemminx",
           "lua_ls",
           "marksman",
+          "pyright",
           "ruff",
           "taplo",
           "ts_ls",
@@ -83,11 +84,11 @@ return {
           -- displays signature information about the symbol under the cursor in a floating window
           vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
           -- renames all references to the symbol under the cursor
-          vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+          vim.keymap.set("n", "<leader>cr", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
           -- format code in current buffer
-          vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
+          vim.keymap.set({ "n", "x" }, "<leader>f", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
           -- selects a code action available at the current cursor position
-          vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+          vim.keymap.set("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
 
           -- vim.keymap.set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>", opts)
           -- vim.keymap.set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<cr>", opts)
@@ -124,24 +125,32 @@ return {
       lspconfig.marksman.setup({ capabilities = capabilities })
       lspconfig.ruff.setup({
         capabilities = capabilities,
-        settings = {
-          ruff = {
-            keys = {
-              {
-                "<leader>co",
-                function()
-                  vim.lsp.buf.code_action({
-                    apply = true,
-                    context = {
-                      only = { "source.organizeImports" },
-                      diagnostics = {},
-                    },
-                  })
-                end,
-                desc = "Organize Imports",
+        on_attach = function(client, bufnr)
+          -- Organize imports keybinding
+          vim.keymap.set("n", "<leader>co", function()
+            vim.lsp.buf.code_action({
+              apply = true,
+              context = {
+                only = { "source.organizeImports" },
+                diagnostics = {},
               },
-            },
-          },
+            })
+          end, { buffer = bufnr, desc = "Organize Imports" })
+
+          -- Add rename keybinding if you want to use <leader>cr
+          vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol" })
+        end
+      })
+      lspconfig.pyright.setup({
+        capabilities = capabilities,
+        settings = {
+          python = {
+            analysis = {
+              typeCheckingMode = "basic",
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true
+            }
+          }
         }
       })
       lspconfig.taplo.setup({ capabilities = capabilities })
