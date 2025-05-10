@@ -72,11 +72,62 @@ return {
         "ts_ls",
         "yamlls",
       },
-      automatic_enable = true,
+      automatic_enable = {
+        exclude = {
+          "pyright",
+          "ruff",
+        },
+      },
     },
     config = function(_, opts)
       require("mason-lspconfig").setup(opts)
 
+      -- get lspconfig
+      local lspconfig = require("lspconfig")
+
+      -- configure ruff
+      lspconfig.ruff_lsp.setup({
+        init_options = {
+          settings = {
+            -- ruff settings if needed
+            logLevel = "error",
+          },
+        },
+      })
+
+      -- configure Pyright
+      lspconfig.pyright.setup({
+        settings = {
+          pyright = {
+            -- using ruff's import organizer
+            disableOrganizeImports = true,
+          },
+          python = {
+            analysis = {
+              typeCheckingMode = "basic",
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              ignore = {},
+            },
+          },
+        },
+      })
+
+      -- disable ruff hover in favor of pyright
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client == nil then
+            return
+          end
+          if client.name == "ruff_lsp" then
+            -- disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+          end
+        end,
+        desc = "LSP: Disable hover capability from Ruff",
+      })
       -- lsp keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(ev)
