@@ -1,161 +1,98 @@
 return {
+  -- 1. mason 2.0
   {
-    "williamboman/mason.nvim",
-    dependencies = {
-      "williamboman/mason-lspconfig.nvim",
-      "neovim/nvim-lspconfig",
-      "hrsh7th/cmp-nvim-lsp",
+    "mason-org/mason.nvim",
+    opts = {
+      ui = {
+        icons = {
+          package_installed = " ",
+          package_pending = " ",
+          package_uninstalled = " ",
+        },
+        border = "rounded",
+      },
     },
-    config = function()
-      -- 1. set up Mason first
-      local mason = require("mason")
-      mason.setup({
-        ui = {
-          icons = {
-            package_installed = " ",
-            package_pending = " ",
-            package_uninstalled = " ",
-          },
-          border = "rounded",
-        },
-      })
+    config = function(_, opts)
+      require("mason").setup(opts)
 
-      -- 2. set up mason-lspconfig
-      local mason_lspconfig = require("mason-lspconfig")
-      mason_lspconfig.setup({
-        ensure_installed = {
-          "ansiblels",
-          "bashls",
-          "cssls",
-          "docker_compose_language_service",
-          "dockerls",
-          "html",
-          "jinja_lsp",
-          "jsonls",
-          "lemminx",
-          "lua_ls",
-          "marksman",
-          "pyright",
-          "ruff",
-          "taplo",
-          "ts_ls",
-          "yamlls",
-        },
-        automatic_installation = true,
-      })
-
-      -- 3. additional Mason packages that aren't LSP servers
+      -- Ensure formatters and linters are installed
       local registry = require("mason-registry")
-      local function ensure_installed()
-        local packages = {
-          "djlint",
-          "prettierd",
-        }
+      local ensure_installed = {
+        -- formatters
+        "djlint",
+        "prettier",
+        "prettierd",
+      }
 
-        for _, package in ipairs(packages) do
-          local p = registry.get_package(package)
+      registry.refresh(function()
+        for _, tool in ipairs(ensure_installed) do
+          local p = registry.get_package(tool)
           if not p:is_installed() then
             p:install()
           end
         end
-      end
-
-      registry.refresh(function()
-        ensure_installed()
       end)
+    end,
+  },
 
-      -- 4. set up LSP keymaps
+  -- 2. on nvim >= 11 we can use new lsp api
+  {
+    "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "mason-org/mason.nvim",
+    },
+  },
+
+  -- 3. mason lspconfig (after both are set up)
+  --    relies on mason >= 2.0 and nvim >= 11
+  {
+    "mason-org/mason-lspconfig.nvim",
+    dependencies = {
+      "mason-org/mason.nvim",
+      "neovim/nvim-lspconfig",
+    },
+    opts = {
+      ensure_installed = {
+        -- lsps
+        "ansiblels",
+        "bashls",
+        "cssls",
+        "docker_compose_language_service",
+        "dockerls",
+        "html",
+        "jinja_lsp",
+        "jsonls",
+        "lemminx",
+        "lua_ls",
+        "marksman",
+        "pyright",
+        "ruff",
+        "taplo",
+        "ts_ls",
+        "yamlls",
+      },
+      automatic_enable = true,
+    },
+    config = function(_, opts)
+      require("mason-lspconfig").setup(opts)
+
+      -- lsp keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
-        desc = "LSP actions",
-        callback = function(event)
-          local opts = { buffer = event.buf }
-          -- displays hover information about the symbol under the cursor in a floating window
-          vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-          -- jumps to the definition of the symbol under the cursor
-          vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-          -- jumps to the declaration of the symbol under the cursor. Some servers don't implement this feature
-          vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-          -- lists all the implementations for the symbol under the cursor in the quickfix window
-          vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-          -- jumps to the definition of the type of the symbol under the cursor
-          vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-          -- lists all the references to the symbol under the cursor in the quickfix window
-          vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-          -- displays signature information about the symbol under the cursor in a floating window
-          vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-          -- renames all references to the symbol under the cursor
-          vim.keymap.set("n", "<leader>cr", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-          -- format code in current buffer
-          vim.keymap.set({ "n", "x" }, "<leader>f", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
-          -- selects a code action available at the current cursor position
-          vim.keymap.set("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-
-          -- vim.keymap.set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>", opts)
-          -- vim.keymap.set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<cr>", opts)
-          -- vim.keymap.set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<cr>", opts)
+        callback = function(ev)
+          local opts = { buffer = ev.buf }
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+          vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+          vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+          vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+          vim.keymap.set({ "n", "v" }, "<leader>f", function()
+            vim.lsp.buf.format({ async = true })
+          end, opts)
         end,
       })
-
-      -- 5. set up capabilities
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      -- 6. configure individual servers
-      local lspconfig = require("lspconfig")
-
-      -- configure each server
-      lspconfig.ansiblels.setup({ capabilities = capabilities })
-      lspconfig.bashls.setup({ capabilities = capabilities })
-      lspconfig.cssls.setup({ capabilities = capabilities })
-      lspconfig.docker_compose_language_service.setup({ capabilities = capabilities })
-      lspconfig.dockerls.setup({ capabilities = capabilities })
-      lspconfig.html.setup({ capabilities = capabilities })
-      lspconfig.jinja_lsp.setup({ capabilities = capabilities })
-      lspconfig.jsonls.setup({ capabilities = capabilities })
-      lspconfig.kulala_ls.setup({ capabilities = capabilities })
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        settings = {
-          Lua = {
-            diagnostics = {
-              globals = { "vim", "describe", "it", "before_each", "after_each" },
-            },
-          },
-        },
-      })
-      lspconfig.marksman.setup({ capabilities = capabilities })
-      lspconfig.ruff.setup({
-        capabilities = capabilities,
-        on_attach = function(client, bufnr)
-          -- Organize imports keybinding
-          vim.keymap.set("n", "<leader>co", function()
-            vim.lsp.buf.code_action({
-              apply = true,
-              context = {
-                only = { "source.organizeImports" },
-                diagnostics = {},
-              },
-            })
-          end, { buffer = bufnr, desc = "Organize Imports" })
-
-          -- Add rename keybinding if you want to use <leader>cr
-          vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = bufnr, desc = "Rename symbol" })
-        end
-      })
-      lspconfig.pyright.setup({
-        capabilities = capabilities,
-        settings = {
-          python = {
-            analysis = {
-              typeCheckingMode = "basic",
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true
-            }
-          }
-        }
-      })
-      lspconfig.taplo.setup({ capabilities = capabilities })
-      lspconfig.ts_ls.setup({ capabilities = capabilities })
-      lspconfig.yamlls.setup({ capabilities = capabilities })
     end,
   },
 }
