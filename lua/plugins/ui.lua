@@ -600,11 +600,10 @@ return {
   },
   {
     "OXY2DEV/markview.nvim",
-    dependendencies = {
-      -- You may not need this if you don't lazy load
-      -- Or if the parsers are in your $RUNTIMEPATH
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-    },
+    opts = {
+      experimental = {
+        check_rtp_message = false
+      }
+    }
   },
 }
