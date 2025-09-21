@@ -1,6 +1,6 @@
 return {
   {
-    "echasnovski/mini.surround",
+    "nvim-mini/mini.surround",
     keys = function(_, keys)
       -- Populate the keys based on the user's options
       local opts = LazyVim.opts("mini.surround")
@@ -53,7 +53,7 @@ return {
     },
   },
   {
-    "echasnovski/mini.diff",
+    "nvim-mini/mini.diff",
     event = "VeryLazy",
     keys = {
       {
