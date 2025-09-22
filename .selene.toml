@@ -1,1 +1,4 @@
-globals = ["vim", "Snacks"]
+[globals]
+vim = true
+Snacks = true
+Util = true
