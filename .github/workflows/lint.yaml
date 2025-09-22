@@ -1,0 +1,23 @@
+name: Selene Lint
+
+on:
+  pull_request:
+    paths:
+      - "**.lua"
+  push:
+    branches:
+      - main
+    paths:
+      - "**.lua"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show Selene Config
+        run: cat .selene.toml
+      - name: Run Selene
+        uses: YoloWingPixie/selene-lua-linter-action@v1
+        with:
+          config-path: .selene.toml

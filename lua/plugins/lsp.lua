@@ -20,8 +20,10 @@ return {
       local ensure_installed = {
         -- formatters
         "djlint",
+        "just",
         "prettier",
         "prettierd",
+        "sqlfluff",
       }
 
       registry.refresh(function()
@@ -56,6 +58,7 @@ return {
       ensure_installed = {
         -- lsps
         "ansiblels",
+        "basedpyright",
         "bashls",
         "cssls",
         "docker_compose_language_service",
@@ -63,10 +66,10 @@ return {
         "html",
         "jinja_lsp",
         "jsonls",
+        "just",
         "lemminx",
         "lua_ls",
         "marksman",
-        "pyright",
         "ruff",
         "taplo",
         "ts_ls",
@@ -74,7 +77,7 @@ return {
       },
       automatic_enable = {
         exclude = {
-          "pyright",
+          "basedpyright",
           "ruff",
         },
       },
@@ -85,8 +88,10 @@ return {
       -- get lspconfig
       local lspconfig = require("lspconfig")
 
+      vim.lsp.set_log_level("DEBUG")
+
       -- configure ruff
-      lspconfig.ruff_lsp.setup({
+      lspconfig.ruff.setup({
         init_options = {
           settings = {
             -- ruff settings if needed
@@ -95,25 +100,113 @@ return {
         },
       })
 
-      -- configure Pyright
-      lspconfig.pyright.setup({
+      -- configure basedpyright
+      lspconfig.basedpyright.setup({
         settings = {
-          pyright = {
-            -- using ruff's import organizer
-            disableOrganizeImports = true,
-          },
-          python = {
+          basedpyright = {
             analysis = {
-              typeCheckingMode = "basic",
-              autoSearchPaths = true,
+              -- type checking modes (from least to most strict):
+              -- "off" - no type checking
+              -- "basic" - basic type checking (assignments, function calls)
+              -- "standard" - mid-level checking (most common)
+              -- "strict" - high level (close to mypy's strict mode)
+              -- "recommended" - most rules turned on
+              -- "all" - maximum strictness
+              typeCheckingMode = "recommended",
+
+              -- useful analysis settings
+              -- -> suggests auto-imports during completion
+              autoImportCompletions = true,
+              -- -> include type info from libraries
               useLibraryCodeForTypes = true,
-              ignore = {},
+              -- -> "openFilesOnly" or "workspace"
+              diagnosticMode = "openFilesOnly",
+
+              -- error customization
+              diagnosticSeverityOverrides = {
+                -- customize specific message severities:
+                -- "none" - disable message
+                -- "information" - informational only
+                -- "warning" - warnings
+                -- "error" - errors
+
+                -- -> instead of error
+                reportOptionalSubscript = "warning",
+                reportOptionalMemberAccess = "warning",
+                reportOptionalCall = "warning",
+
+                -- -> type completeness
+                reportUnknownParameterType = true,
+                reportUnknownVariableType = true,
+                reportUnknownMemberType = false, -- often noisy with dynamic code
+
+                -- -> unused code
+                reportUnusedCallResult = "none",
+                -- -> shows as hint in editor
+                reportUnusedVariable = "hint",
+                reportUnusedImport = "hint",
+
+                -- basedpyright exclusive settings
+                -- -> warn about implicit Any types
+                reportAny = "warning",
+                -- -> warn about explicit Any usage
+                reportExplicitAny = "warning",
+                reportUnreachable = "warning",
+              },
+
+              -- common settings
+              -- -> Stricter typing for lists
+              strictListInference = true,
+              -- -> Stricter typing for dicts
+              strictDictionaryInference = true,
+              -- -> Stricter typing for sets
+              strictSetInference = true,
+              strictGenericNarrowing = true,
+
+              -- what to ignore
+              ignore = {
+                -- ignore specific files/directories
+                -- -> ignore test directories
+                "**/tests/**",
+                "**/__pycache__/**",
+              },
+
+              -- type checking customization
+              reportMissingImports = true,
+              -- -> often turned off due to many missing stubs
+              reportMissingTypeStubs = false,
+              -- -> can be noisy with dynamic code
+              reportUnknownMemberType = false,
+              reportUnknownParameterType = true,
+              reportUnknownVariableType = true,
+              reportUntypedFunctionDecorator = true,
+
+              -- extra features
+              inlayHints = {
+                -- -> show parameter names in function calls
+                callArgumentNames = true,
+                -- -> show return types
+                functionReturnTypes = true,
+                -- -> show variable types
+                variableTypes = true,
+                genericTypes = false,
+
+                -- experimental
+                -- -> for python >= 3.9
+                deprecateTypingAliases = true
+              },
             },
+          },
+        },
+        init_options = {
+          python = {
+            pythonVersion = "3.13",
+            pythonPlatform = "Linux",
           },
         },
       })
 
-      -- disable ruff hover in favor of pyright
+      -- disable ruff hover in favor of basedpyright
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
         callback = function(args)
@@ -146,4 +239,16 @@ return {
       })
     end,
   },
+
+  -- batteries included sqlfluff in neovim
+  {
+    "michhernand/simple-sqlfluff.nvim",
+    keys = {
+      { "<leader>Sf", "<cmd>SQLFluffFormat<CR>",  desc = "Format w/ SQLFluff" },
+      { "<leader>St", "<cmd>SQLFluffToggle<CR>",  desc = "Toggle SQLFluff Linting" },
+      { "<leader>Se", "<cmd>SQLFluffEnable<CR>",  desc = "Enable SQLFluff Linting" },
+      { "<leader>Sd", "<cmd>SQLFluffDisable<CR>", desc = "Disable SQLFluff Linting" },
+    },
+    opts = {}
+  }
 }

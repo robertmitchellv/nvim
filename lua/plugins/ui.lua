@@ -487,7 +487,7 @@ return {
       local events = require("neo-tree.events")
       opts.event_handlers = opts.event_handlers or {}
       vim.list_extend(opts.event_handlers, {
-        { event = events.FILE_MOVED, handler = on_move },
+        { event = events.FILE_MOVED,   handler = on_move },
         { event = events.FILE_RENAMED, handler = on_move },
       })
       require("neo-tree").setup(opts)
@@ -565,7 +565,7 @@ return {
     },
   },
   {
-    "echasnovski/mini.animate",
+    "nvim-mini/mini.animate",
     event = "VeryLazy",
     opts = function()
       -- don't use animate when scrolling with the mouse
@@ -600,11 +600,10 @@ return {
   },
   {
     "OXY2DEV/markview.nvim",
-    dependendencies = {
-      -- You may not need this if you don't lazy load
-      -- Or if the parsers are in your $RUNTIMEPATH
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-    },
+    opts = {
+      experimental = {
+        check_rtp_message = false
+      }
+    }
   },
 }
