@@ -1,0 +1,25 @@
+name: Lua Lint
+
+on:
+  pull_request:
+    paths:
+      - "**.lua"
+  push:
+    branches:
+      - main
+    paths:
+      - "**.lua"
+
+jobs:
+  luacheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Lua
+        uses: leafo/gh-actions-lua@v9
+        with:
+          lua-version: 5.1
+      - name: Install luacheck
+        run: luarocks install luacheck
+      - name: Run luacheck
+        run: luacheck .
