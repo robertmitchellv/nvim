@@ -23,13 +23,13 @@ jobs:
           luaVersion: 5.1
 
       # cache luarocks dependencies
-      - name: Cache luarocks
+      - name: Cache Lua
         uses: actions/cache@v3
         with:
-          path: ~/.luarocks
-          key: ${{ runner.os }}-luarocks-${{ hashFiles('**/rockspec') }}
+          path: ~/.lua
+          key: ${{ runner.os }}-lua-${{ hashFiles('**/lua.lock') }}
           restore-keys: |
-            ${{ runner.os }}-luarocks-
+            ${{ runner.os }}-lua-
 
       # install luarocks and luacheck
       - name: Install luarocks
