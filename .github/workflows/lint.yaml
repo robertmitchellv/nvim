@@ -20,4 +20,4 @@ jobs:
       - name: Run Selene
         uses: YoloWingPixie/selene-lua-linter-action@v1
         with:
-          config: .selene.toml
+          config-path: .selene.toml
