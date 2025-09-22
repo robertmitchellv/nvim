@@ -11,33 +11,42 @@ on:
       - "**.lua"
 
 jobs:
-  luacheck:
+  luatypecheck:
+    name: Lua Typecheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Run luatypecheck
+        uses: lunarmodules/lua-typecheck-action@v1
+        with:
+          path: "."
 
-      # set up Lua (no cache params)
+  luacheck:
+    name: Lua Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Set up Lua
         uses: leafo/gh-actions-lua@v9
         with:
           luaVersion: 5.1
-
-      # cache luarocks dependencies
-      - name: Cache Lua
-        uses: actions/cache@v3
-        with:
-          path: ~/.lua
-          key: ${{ runner.os }}-lua-${{ hashFiles('**/lua.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-lua-
-
-      # install luarocks and luacheck
       - name: Install luarocks
         run: sudo apt-get install luarocks
-
       - name: Install luacheck
         run: luarocks install luacheck
-
-      # run luacheck
       - name: Run luacheck
         run: luacheck .
+
+  test:
+    name: Lux Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Neovim
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y neovim luarocks
+      - name: Install Lux
+        run: luarocks install lux
+      - name: Run Lux tests
+        run: nvim --headless -c 'lua require("lux").run()' -c 'qa'
