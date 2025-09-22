@@ -15,13 +15,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # set up Lua (no cache params)
       - name: Set up Lua
         uses: leafo/gh-actions-lua@v9
         with:
           luaVersion: 5.1
+
+      # cache luarocks dependencies
+      - name: Cache luarocks
+        uses: actions/cache@v3
+        with:
+          path: ~/.luarocks
+          key: ${{ runner.os }}-luarocks-${{ hashFiles('**/rockspec') }}
+          restore-keys: |
+            ${{ runner.os }}-luarocks-
+
+      # install luarocks and luacheck
       - name: Install luarocks
         run: sudo apt-get install luarocks
+
       - name: Install luacheck
         run: luarocks install luacheck
+
+      # run luacheck
       - name: Run luacheck
         run: luacheck .
