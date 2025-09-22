@@ -1,4 +1,4 @@
-name: Lua Lint
+name: Lua CI
 
 on:
   pull_request:
