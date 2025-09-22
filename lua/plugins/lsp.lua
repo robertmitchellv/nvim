@@ -20,6 +20,7 @@ return {
       local ensure_installed = {
         -- formatters
         "djlint",
+        "just",
         "prettier",
         "prettierd",
         "sqlfluff",
@@ -65,6 +66,7 @@ return {
         "html",
         "jinja_lsp",
         "jsonls",
+        "just",
         "lemminx",
         "lua_ls",
         "marksman",
