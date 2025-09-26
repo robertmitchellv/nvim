@@ -1,5 +1,6 @@
 return {
   -- 1. mason 2.0
+  -- *  used for lsp and formatter/linter management
   {
     "mason-org/mason.nvim",
     opts = {
@@ -20,7 +21,6 @@ return {
       local ensure_installed = {
         -- formatters
         "djlint",
-        "just",
         "prettier",
         "prettierd",
         "sqlfluff",
@@ -37,7 +37,8 @@ return {
     end,
   },
 
-  -- 2. on nvim >= 11 we can use new lsp api
+  -- 2. nvim-lspconfig for easy lsp setup
+  -- *  on nvim >= 11 we can use new lsp api
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
@@ -47,7 +48,8 @@ return {
   },
 
   -- 3. mason lspconfig (after both are set up)
-  --    relies on mason >= 2.0 and nvim >= 11
+  -- *  mason-lspconfig for wiring mason and lspconfig together
+  -- *  relies on mason >= 2.0 and nvim >= 11
   {
     "mason-org/mason-lspconfig.nvim",
     dependencies = {
@@ -58,7 +60,6 @@ return {
       ensure_installed = {
         -- lsps
         "ansiblels",
-        "basedpyright",
         "bashls",
         "cssls",
         "docker_compose_language_service",
@@ -66,11 +67,9 @@ return {
         "html",
         "jinja_lsp",
         "jsonls",
-        "just",
         "lemminx",
         "lua_ls",
         "marksman",
-        "ruff",
         "taplo",
         "ts_ls",
         "yamlls",
@@ -88,9 +87,10 @@ return {
       -- get lspconfig
       local lspconfig = require("lspconfig")
 
-      vim.lsp.set_log_level("DEBUG")
+      -- try to keep lsp log velocity down
+      vim.lsp.set_log_level("warn")
 
-      -- configure ruff
+      -- configure ruff for linting; not completion
       lspconfig.ruff.setup({
         init_options = {
           settings = {
@@ -100,7 +100,7 @@ return {
         },
       })
 
-      -- configure basedpyright
+      -- configure basedpyright for completion/signature help
       lspconfig.basedpyright.setup({
         settings = {
           basedpyright = {
@@ -221,6 +221,7 @@ return {
         end,
         desc = "LSP: Disable hover capability from Ruff",
       })
+
       -- lsp keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(ev)
