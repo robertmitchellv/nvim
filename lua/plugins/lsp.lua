@@ -112,7 +112,7 @@ return {
               -- "strict" - high level (close to mypy's strict mode)
               -- "recommended" - most rules turned on
               -- "all" - maximum strictness
-              typeCheckingMode = "recommended",
+              typeCheckingMode = "standard",
 
               -- useful analysis settings
               -- -> suggests auto-imports during completion
@@ -138,7 +138,7 @@ return {
                 -- -> type completeness
                 reportUnknownParameterType = true,
                 reportUnknownVariableType = true,
-                reportUnknownMemberType = false, -- often noisy with dynamic code
+                reportUnknownMemberType = false,
 
                 -- -> unused code
                 reportUnusedCallResult = "none",
@@ -147,11 +147,11 @@ return {
                 reportUnusedImport = "hint",
 
                 -- basedpyright exclusive settings
-                -- -> warn about implicit Any types
-                reportAny = "warning",
-                -- -> warn about explicit Any usage
-                reportExplicitAny = "warning",
-                reportUnreachable = "warning",
+                -- -> hint about implicit Any types
+                reportAny = "hint",
+                -- -> hint about explicit Any usage
+                reportExplicitAny = "hint",
+                reportUnreachable = "hint",
               },
 
               -- common settings
@@ -177,9 +177,9 @@ return {
               reportMissingTypeStubs = false,
               -- -> can be noisy with dynamic code
               reportUnknownMemberType = false,
-              reportUnknownParameterType = true,
-              reportUnknownVariableType = true,
-              reportUntypedFunctionDecorator = true,
+              reportUnknownParameterType = false,
+              reportUnknownVariableType = false,
+              reportUntypedFunctionDecorator = false,
 
               -- extra features
               inlayHints = {
