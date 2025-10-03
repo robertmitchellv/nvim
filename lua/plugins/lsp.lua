@@ -7,7 +7,7 @@ return {
   -- setting this up in a custom way. for everything else
   -- that i'm happy with out of the box, LazyExtras -> lazy.lua
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {
       ui = {
         icons = {

@@ -38,7 +38,7 @@ api.nvim_create_autocmd("FileType", {
     "gitcommit",
   },
   callback = function()
-    vim.bo.spell = true
+    vim.wo.spell = true
     vim.bo.spelllang = "en"
   end,
 })
