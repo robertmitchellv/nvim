@@ -6,20 +6,23 @@ local api = vim.api
 local cmd = vim.cmd
 local opt = vim.opt
 
+-- tell lazyvim what python lsp tooling i want to use
+vim.g.lazyvim_python_lsp = "basedpyright"
+vim.g.lazyvim_python_ruff = "ruff"
+
 -- color definitions for use in highlights and UI
 local colors = {
   -- spelling error squiggles (brightest for visibility)
-  spell_bad   = "#ff899d", -- red_bright (Tokyo Night Storm)
-  spell_cap   = "#c7a9ff", -- magenta_bright (Tokyo Night Storm)
-  spell_rare  = "#faba4a", -- yellow_bright (Tokyo Night Storm)
+  spell_bad = "#ff899d", -- red_bright (Tokyo Night Storm)
+  spell_cap = "#c7a9ff", -- magenta_bright (Tokyo Night Storm)
+  spell_rare = "#faba4a", -- yellow_bright (Tokyo Night Storm)
   spell_local = "#a4daff", -- cyan_bright (Tokyo Night Storm)
 
-  -- GitBlame highlights
+  -- gitblame highlights
   gitblame_fg = "#565f89", -- comment (Tokyo Night Storm)
   gitblame_bg = "#292e42", -- bg_highlight (Tokyo Night Storm)
 }
 
--- enable spell checking for relevant filetypes
 api.nvim_create_autocmd("FileType", {
   pattern = {
     "lua",
@@ -35,7 +38,8 @@ api.nvim_create_autocmd("FileType", {
     "gitcommit",
   },
   callback = function()
-    opt.spell = true
+    vim.bo.spell = true
+    vim.bo.spelllang = "en"
   end,
 })
 
@@ -46,11 +50,9 @@ cmd(string.format("highlight SpellRare gui=undercurl guisp=%s", colors.spell_rar
 cmd(string.format("highlight SpellLocal gui=undercurl guisp=%s", colors.spell_local))
 
 -- GitBlame highlight (italic comment color on bg_highlight)
-cmd(string.format(
-  "highlight GitBlame cterm=italic gui=italic guifg=%s guibg=%s",
-  colors.gitblame_fg,
-  colors.gitblame_bg
-))
+cmd(
+  string.format("highlight GitBlame cterm=italic gui=italic guifg=%s guibg=%s", colors.gitblame_fg, colors.gitblame_bg)
+)
 cmd("hi link Keyword GitBlame")
 
 -- clipboard integration
@@ -59,8 +61,8 @@ opt.clipboard = "unnamedplus"
 -- jinja filetype detection
 vim.filetype.add({
   extension = {
-    jinja  = "jinja",
+    jinja = "jinja",
     jinja2 = "jinja",
-    j2     = "jinja",
+    j2 = "jinja",
   },
 })

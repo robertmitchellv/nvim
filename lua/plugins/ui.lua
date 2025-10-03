@@ -1,71 +1,21 @@
 -- icons
-local icons = {
-  dashboard = {
-    lazy = "󰒲 ",
-    update = " ",
-    sync = " ",
-    mason = "  ",
-    telescope = "  ",
-    exit = " ",
-  },
-  lualine = {
-    left_bar = "▊ ",
-    right_bar = " ▊",
-    neovim_icon = " ",
-    branch = "",
-    add = " ",
-    change = " ",
-    delete = " ",
-    lsp_icon = "lsp  ",
-    error = " ",
-    warn = " ",
-    hint = " ",
-    info = " ",
-    select = " ",
-    terminal = " ",
-    replace = " ",
-    copilot_enabled = " ",
-    copilot_sleep = "󰒲 ",
-    copilot_disabled = " ",
-    copilot_warning = " ",
-    copilot_unknown = " ",
-    status_right_pop = " ",
-    status_right_mac = " ",
-  },
-  neotree = {
-    default = " ",
-    symlink = " ",
-    bookmark = " ",
-    folder = {
-      arrow_closed = " ",
-      arrow_open = " ",
-      default = " ",
-      open = " ",
-      empty = " ",
-      closed = " ",
-      empty_open = " ",
-      symlink = " ",
-      symlink_open = " ",
-      symlink_arrow = "  ",
-    },
-    file = {
-      modified = "󱇨 ",
-    },
-    git = {
-      unstaged = " ",
-      staged = " ",
-      unmerged = " ",
-      renamed = " ",
-      untracked = " ",
-      deleted = " ",
-      ignored = " ",
-      conflict = "裂",
-    },
-  },
-}
+local icons = require("utils.icons")
 
 -- plugins
 return {
+  {
+    "folke/tokyonight.nvim",
+    lazy = true,
+    opts = {
+      style = "storm",
+    },
+  },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "tokyonight",
+    },
+  },
   {
     "nvimdev/dashboard-nvim",
     event = "VimEnter",
@@ -107,20 +57,19 @@ return {
               key = "q",
             },
           },
-          project = { limit = 5, icon = " " },
-          mru = { limit = 5, icon = " " },
+          project = { limit = 5, icon = icons.dashboard.project },
+          mru = { limit = 5, icon = icons.dashboard.mru },
         },
       })
     end,
-    dependencies = { { "nvim-tree/nvim-web-devicons" } },
+    dependencies = {
+      { "nvim-tree/nvim-web-devicons" },
+    },
   },
-
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
-    -- dependencies = { "AndreM222/copilot-lualine" },
     opts = function()
-      local Util = require("lazyvim.util")
       local colors = require("tokyonight.colors").setup()
       local mode_color = {
         -- normal
@@ -374,33 +323,6 @@ return {
         padding = { left = 1, right = 2 },
       })
 
-      -- ins_right({
-      --   "copilot",
-      --   symbols = {
-      --     status = {
-      --       icons = {
-      --         enabled = icons.copilot_enabled,
-      --         sleep = icons.copilot_sleep,
-      --         disabled = icons.copilot_disabled,
-      --         warning = icons.copiolt_warning,
-      --         unknown = icons.copilot_unknown,
-      --       },
-      --       hl = {
-      --         enabled = colors.green,
-      --         sleep = colors.green,
-      --         disabled = colors.error,
-      --         warning = colors.warning,
-      --         unknown = colors.warning,
-      --       },
-      --     },
-      --     spinners = require("copilot-lualine.spinners").dots,
-      --     spinner_color = colors.green,
-      --   },
-      --   show_colors = true,
-      --   show_loading = true,
-      --   padding = { left = 1, right = 1 },
-      -- })
-
       -- os logo
       ins_right({
         function()
@@ -425,7 +347,6 @@ return {
       return config
     end,
   },
-
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -480,6 +401,7 @@ return {
       },
     },
     config = function(_, opts)
+      local Util = require("lazyvim.util")
       local function on_move(data)
         Util.lsp.on_rename(data.source, data.destination)
       end
@@ -487,7 +409,7 @@ return {
       local events = require("neo-tree.events")
       opts.event_handlers = opts.event_handlers or {}
       vim.list_extend(opts.event_handlers, {
-        { event = events.FILE_MOVED,   handler = on_move },
+        { event = events.FILE_MOVED, handler = on_move },
         { event = events.FILE_RENAMED, handler = on_move },
       })
       require("neo-tree").setup(opts)
@@ -501,56 +423,19 @@ return {
       })
     end,
   },
-
-  {
-    "rcarriga/nvim-notify",
-    keys = {
-      {
-        "<leader>un",
-        function()
-          require("notify").dismiss({ silent = true, pending = true })
-        end,
-        desc = "Delete all Notifications",
-      },
-    },
-    opts = {
-      background_color = function()
-        local colors = require("tokyonight.colors").setup()
-        return colors.bg
-      end,
-      timeout = 3000,
-      max_height = function()
-        return math.floor(vim.o.lines * 0.75)
-      end,
-      max_width = function()
-        return math.floor(vim.o.columns * 0.75)
-      end,
-    },
-    init = function()
-      -- when noice is not enabled, install notify on VeryLazy
-      local Util = require("lazyvim.util")
-      if not Util.has("noice.nvim") then
-        Util.on_very_lazy(function()
-          vim.notify = require("notify")
-        end)
-      end
-    end,
-  },
-
-  {
-    "folke/tokyonight.nvim",
-    lazy = true,
-    opts = {
-      style = "storm",
-    },
-  },
   {
     "f-person/git-blame.nvim",
     config = function()
       require("gitblame").setup({
-        message_template = "    <author>   <date>   <summary>",
+        message_template = " "
+          .. icons.gitblame.author
+          .. " <author> "
+          .. icons.gitblame.date
+          .. " <date> "
+          .. icons.gitblame.summary
+          .. " <summary> ",
         date_format = "%r",
-        message_when_not_committed = "  󱋽  uncommitted",
+        message_when_not_committed = "  " .. icons.gitblame.uncomitted .. " uncommitted ",
         -- added custom highlight group to LazyVim's options.lua:
         -- :highlight GitBlame cterm=italic gui=italic guifg=#565f89 guibg=#292e42
         -- :hi link Keyword GitBlame
@@ -559,51 +444,11 @@ return {
     end,
   },
   {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "tokyonight",
-    },
-  },
-  {
-    "nvim-mini/mini.animate",
-    event = "VeryLazy",
-    opts = function()
-      -- don't use animate when scrolling with the mouse
-      local mouse_scrolled = false
-      for _, scroll in ipairs({ "Up", "Down" }) do
-        local key = "<ScrollWheel" .. scroll .. ">"
-        vim.keymap.set({ "", "i" }, key, function()
-          mouse_scrolled = true
-          return key
-        end, { expr = true })
-      end
-
-      local animate = require("mini.animate")
-      return {
-        resize = {
-          timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
-        },
-        scroll = {
-          timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
-          subscroll = animate.gen_subscroll.equal({
-            predicate = function(total_scroll)
-              if mouse_scrolled then
-                mouse_scrolled = false
-                return false
-              end
-              return total_scroll > 1
-            end,
-          }),
-        },
-      }
-    end,
-  },
-  {
     "OXY2DEV/markview.nvim",
     opts = {
       experimental = {
-        check_rtp_message = false
-      }
-    }
+        check_rtp_message = false,
+      },
+    },
   },
 }
