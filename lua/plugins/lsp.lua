@@ -18,6 +18,7 @@ return {
       },
       ensure_installed = {
         "basedpyright",
+        "lemminx",
         "ruff",
       },
     },
