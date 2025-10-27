@@ -32,6 +32,7 @@ local icons = {
     copilot_disabled = " ",
     copilot_warning = " ",
     copilot_unknown = " ",
+    status_right_arch = "󰣇 ",
     status_right_pop = " ",
     status_right_mac = " ",
   },

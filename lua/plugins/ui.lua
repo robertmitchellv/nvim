@@ -326,7 +326,7 @@ return {
       -- os logo
       ins_right({
         function()
-          return icons.lualine.status_right_pop
+          return icons.lualine.status_right_arch
         end,
         color = function()
           return { fg = mode_color[vim.fn.mode()] }
