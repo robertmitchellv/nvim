@@ -424,26 +424,6 @@ return {
     end,
   },
   {
-    "f-person/git-blame.nvim",
-    config = function()
-      require("gitblame").setup({
-        message_template = " "
-          .. icons.gitblame.author
-          .. " <author> "
-          .. icons.gitblame.date
-          .. " <date> "
-          .. icons.gitblame.summary
-          .. " <summary> ",
-        date_format = "%r",
-        message_when_not_committed = "  " .. icons.gitblame.uncomitted .. " uncommitted ",
-        -- added custom highlight group to LazyVim's options.lua:
-        -- :highlight GitBlame cterm=italic gui=italic guifg=#565f89 guibg=#292e42
-        -- :hi link Keyword GitBlame
-        highlight_group = "GitBlame",
-      })
-    end,
-  },
-  {
     "OXY2DEV/markview.nvim",
     opts = {
       experimental = {
