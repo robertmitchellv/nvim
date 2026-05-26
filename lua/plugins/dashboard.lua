@@ -19,7 +19,7 @@ return {
             key = "l",
           },
           {
-            desc = icons.dashboard.lazy .. icons.dashboard.sync .. "sync",
+            desc = icons.dashboard.sync .. "sync",
             action = "Lazy sync",
             key = "s",
           },

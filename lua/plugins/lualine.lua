@@ -33,6 +33,12 @@ return {
     local colors = require("tokyonight.colors").setup()
     local mode_icon = statusline.mode_icon(icons)
 
+    -- Define the NavicBubble* highlight groups (text, separator, icon).
+    -- Each pinned to tier3_bg so the colored segments don't punch
+    -- through the bubble's background fill. Re-applied on ColorScheme
+    -- changes by the setup function itself.
+    statusline.setup_navic_highlights({ bubbles = b })
+
     local config = {
       options = {
         component_separators = "",
@@ -166,9 +172,13 @@ return {
     }, nil, statusline.all(conditions.hide_in_width, conditions.in_git_repo))
 
     -- navic breadcrumbs (tier 3, when navic is attached)
+    -- uses statusline.format_navic() to render the symbol path as plain
+    -- text from get_data(), owning the highlights via the bubble rather
+    -- than letting navic inject its own (which would break tier3_bg
+    -- mid-string with NavicIcons*/NavicText escape sequences).
     H.tier3("left", {
       function()
-        return require("nvim-navic").get_location()
+        return statusline.format_navic({ depth_limit = 4 })
       end,
     }, { fg = b.light_fg }, conditions.navic_available)
 

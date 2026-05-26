@@ -1,21 +1,24 @@
--- helpers, predicates, and lookup tables for the lualine statusline
--- * the plugin file itself stays declarative: components + conditions
--- * the mechanics (bubble assembly, mode→color/icon, "is X available?")
--- live here
+-- utils/statusline.lua
 --
--- module surface:
+-- Helpers, predicates, and lookup tables for the lualine statusline.
+-- The plugin file itself stays declarative: components + conditions.
+-- The mechanics (bubble assembly, mode→color/icon, "is X available?")
+-- live here.
+--
+-- Module surface:
 --   M.conditions       -- predicates for `cond = ...`
 --   M.mode_accent(b)   -- mode → bookend bg color (takes bubble palette)
 --   M.mode_icon        -- mode → icon string
 --   M.bubble(opts)     -- low-level: builds a single bubble
 --   M.tier1/2/3(...)   -- high-level: pre-styled bubbles for each tier
+--   M.format_navic()   -- format navic breadcrumbs as plain text (no escapes)
 --
--- the tier helpers need a context with `ins`, `b` (bubbles palette), and
+-- The tier helpers need a context with `ins`, `b` (bubbles palette), and
 -- `icons` — see `M.new(ctx)` below, which returns a bound set of helpers.
 --
 -- USAGE PATTERN (in plugins/lualine.lua):
 --
---   local LL = require("utils.lualine")
+--   local LL = require("utils.statusline")
 --   local icons = require("utils.icons")
 --   local helpers = LL.new({ ins_left = ins_left, ins_right = ins_right,
 --                            icons = icons, b = icons.bubbles })
@@ -27,17 +30,17 @@ local M = {}
 -- ════════════════════════════════════════════════════════════════
 -- CONDITIONS
 --
--- all predicates live here. The plugin file references them by name
--- three classes of predicates:
+-- All predicates live here. The plugin file references them by name.
+-- Three classes of predicates:
 --
 --   LAYOUT     — about screen/buffer geometry (always cheap)
 --   AVAILABLE  — is the data SOURCE present? (plugin loaded, LSP attached)
 --   CONTENT    — is there meaningful CONTENT to show right now?
 --
--- for most context bubbles you want AVAILABLE, not CONTENT — the bubble
+-- For most context bubbles you want AVAILABLE, not CONTENT — the bubble
 -- being present is the signal that the source exists, and empty content
 -- within it is fine. CONTENT predicates make bubbles flicker as data
--- comes and goes; AVAILABLE predicates make them stable for a session
+-- comes and goes; AVAILABLE predicates make them stable for a session.
 -- ════════════════════════════════════════════════════════════════
 M.conditions = {
   -- ── LAYOUT ────────────────────────────────────────────────
@@ -108,8 +111,8 @@ M.conditions = {
   end,
 }
 
--- combine multiple predicates with AND
--- usage: cond = LL.all(LL.conditions.hide_in_width, LL.conditions.has_lsp_for_buffer)
+-- Combine multiple predicates with AND.
+-- Usage: cond = LL.all(LL.conditions.hide_in_width, LL.conditions.has_lsp_for_buffer)
 function M.all(...)
   local preds = { ... }
   return function()
@@ -125,8 +128,8 @@ end
 -- ════════════════════════════════════════════════════════════════
 -- MODE LOOKUPS
 --
--- mode → bookend color (depends on the bubble palette `b`, so it's a
--- factory). mode → icon doesn't depend on anything but the icons module
+-- Mode → bookend color (depends on the bubble palette `b`, so it's a
+-- factory). Mode → icon doesn't depend on anything but the icons module.
 -- ════════════════════════════════════════════════════════════════
 function M.mode_accent(b)
   return {
@@ -181,7 +184,7 @@ end
 -- ════════════════════════════════════════════════════════════════
 -- BUBBLE BUILDER
 --
--- collapses the three-component [bracket][content][bracket] pattern
+-- Collapses the three-component [bracket][content][bracket] pattern
 -- into one call. All three share `cond` so they render or hide as a
 -- single visual unit.
 --
@@ -262,12 +265,12 @@ function M.new(ctx)
   -- ──────────────────────────────────────────────────────────
   -- TIER WRAPPERS
   --
-  -- each wrapper pre-fills the background for its tier:
+  -- Each wrapper pre-fills the background for its tier:
   --   tier1 — mode-reactive bg, dark bold text (bookends)
   --   tier2 — fixed medium bg, caller picks fg
   --   tier3 — fixed dark bg, caller picks fg
   --
-  -- signature: tierN(side, content, content_color?, cond?)
+  -- Signature: tierN(side, content, content_color?, cond?)
   -- ──────────────────────────────────────────────────────────
   local function tier1(side, content, content_color, cond)
     bubble({
@@ -307,6 +310,141 @@ function M.new(ctx)
     tier2 = tier2,
     tier3 = tier3,
   }
+end
+
+-- ════════════════════════════════════════════════════════════════
+-- FORMATTERS
+--
+-- Pure functions that turn plugin data into bubble-ready strings.
+-- Module-level (not bound to a context) — they're callable from
+-- anywhere that has access to the source plugin's data.
+-- ════════════════════════════════════════════════════════════════
+
+-- Pre-define the highlight groups used by format_navic. Called once at
+-- setup time and re-applied on ColorScheme changes so they survive a
+-- theme reload. Each group has its bg pinned to tier3_bg so the colored
+-- bits don't punch through the bubble background.
+--
+-- The "kind" → highlight mapping is intentionally coarse: most symbol
+-- kinds use the same accent color so the breadcrumb reads as a unit.
+-- If you want per-kind colors (Class one shade, Function another), this
+-- is the function to extend.
+function M.setup_navic_highlights(opts)
+  opts = opts or {}
+  local b = opts.bubbles or require("utils.icons").bubbles
+  local set = function(name, fg)
+    vim.api.nvim_set_hl(0, name, { fg = fg, bg = b.tier3_bg })
+  end
+
+  -- Three roles in the breadcrumb:
+  set("NavicBubbleText", b.muted_fg or b.light_fg)
+  set("NavicBubbleSeparator", b.dim_fg or b.muted_fg or b.light_fg)
+  set("NavicBubbleIcon", b.accent or b.magenta)
+
+  -- Re-apply on theme reload (e.g. :colorscheme or live reload)
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    callback = function()
+      M.setup_navic_highlights(opts)
+    end,
+  })
+end
+
+-- Wrap a string in a statusline highlight directive. `%*` resets to the
+-- component's base color when the wrapped segment ends.
+local function hl(group, text)
+  return "%#" .. group .. "#" .. text .. "%*"
+end
+
+-- Format a navic breadcrumb path from raw symbol data.
+--
+-- Uses get_data() directly (not get_location()) so we own the rendering
+-- and can apply our own muted color scheme via NavicBubble* highlight
+-- groups (set up by M.setup_navic_highlights, which must be called once
+-- at startup).
+--
+-- opts (all optional):
+--   separator      string  — between path segments (default "  ")
+--   show_icons     bool    — prepend each segment with its kind icon (default true)
+--   depth_limit    number  — max segments before truncation (default 4)
+--   truncate_from  string  — "start" or "end" — which end to drop (default "start"; keep the leaf)
+--   truncate_mark  string  — indicator for elided segments (default "… ")
+--   empty          string  — returned when no symbol path (default "")
+--   colorize       bool    — emit %#…# highlight escapes (default true). Set false
+--                            for plain text (falls back to bubble's base color).
+function M.format_navic(opts)
+  opts = opts or {}
+  local separator = opts.separator or "  "
+  local show_icons = opts.show_icons ~= false -- default true
+  local depth_limit = opts.depth_limit or 4
+  local truncate_from = opts.truncate_from or "start"
+  local truncate_mark = opts.truncate_mark or "… "
+  local empty = opts.empty or ""
+  local colorize = opts.colorize ~= false -- default true
+
+  if not package.loaded["nvim-navic"] then
+    return empty
+  end
+  local navic = require("nvim-navic")
+  if not navic.is_available() then
+    return empty
+  end
+
+  local data = navic.get_data()
+  if not data or #data == 0 then
+    return empty
+  end
+
+  -- Apply depth limit by dropping from the chosen end.
+  local segments = data
+  local truncated = false
+  if #segments > depth_limit then
+    truncated = true
+    if truncate_from == "end" then
+      local kept = {}
+      for i = 1, depth_limit do
+        kept[i] = segments[i]
+      end
+      segments = kept
+    else
+      local kept = {}
+      local start = #segments - depth_limit + 1
+      for i = start, #segments do
+        kept[#kept + 1] = segments[i]
+      end
+      segments = kept
+    end
+  end
+
+  -- Format each segment. Three pieces per segment: icon, name, joining sep.
+  local parts = {}
+  for _, seg in ipairs(segments) do
+    if show_icons and seg.icon and seg.icon ~= "" then
+      if colorize then
+        parts[#parts + 1] = hl("NavicBubbleIcon", seg.icon) .. hl("NavicBubbleText", seg.name)
+      else
+        parts[#parts + 1] = seg.icon .. seg.name
+      end
+    else
+      if colorize then
+        parts[#parts + 1] = hl("NavicBubbleText", seg.name)
+      else
+        parts[#parts + 1] = seg.name
+      end
+    end
+  end
+
+  local sep = colorize and hl("NavicBubbleSeparator", separator) or separator
+  local result = table.concat(parts, sep)
+
+  if truncated then
+    local mark = colorize and hl("NavicBubbleSeparator", truncate_mark) or truncate_mark
+    if truncate_from == "end" then
+      result = result .. sep .. mark
+    else
+      result = mark .. result
+    end
+  end
+  return result
 end
 
 return M

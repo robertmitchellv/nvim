@@ -24,6 +24,7 @@ require("lazy").setup({
 
     -- editor extras
     { import = "lazyvim.plugins.extras.editor.mini-diff" },
+    { import = "lazyvim.plugins.extras.editor.navic" },
     { import = "lazyvim.plugins.extras.editor.snacks_picker" },
 
     -- formatting extras

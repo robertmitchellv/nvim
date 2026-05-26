@@ -8,6 +8,12 @@ local icons = {
     -- text colors
     dark_fg = "#24283b", -- dark text for bright bookend bubbles
     light_fg = "#c0caf5", -- light text for neutral content (filenames, etc.)
+
+    -- muted text colors (dimmer than light_fg — for "reference" info like breadcrumbs)
+    muted_fg = "#a9b1d6", -- storm.fg_dark — soft text, still readable
+    dim_fg = "#565f89", -- storm.comment — near-invisible, for separators
+    accent = "#9d7cd8", -- storm.purple — soft purple, for breadcrumb icons
+
     -- starship accent colors (used for bookend bg + semantic text)
     red = "#f7768e",
     orange = "#ff9e64",
@@ -15,8 +21,8 @@ local icons = {
     cyan_lt = "#b4f9f8",
     cyan = "#2ac3de",
     magenta = "#bb9af7",
+
     -- tier backgrounds (progressively darker toward center)
-    -- tier 1: uses the accent colors directly (no bg entry needed)
     tier2_bg = "#292e42", -- medium-dark (bg_highlight from tokyo night storm)
     tier3_bg = "#1e2030", -- darkest (bg_dark, nearly transparent feel)
   },
