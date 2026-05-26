@@ -15,8 +15,14 @@ return {
         -- features_disabled can also be set to "all" and then all features that
         -- are on (on=true) are going to be disabled for this behaviour
         features_disabled = {
-          "illuminate", "matchparen", "lsp", "treesitter",
-          "indent_blankline", "vimopts", "syntax", "filetype"
+          "illuminate",
+          "matchparen",
+          "lsp",
+          "treesitter",
+          "indent_blankline",
+          "vimopts",
+          "syntax",
+          "filetype",
         },
         -- files larger than `filesize` are considered big files. Value is in MB.
         filesize = 20,
@@ -41,7 +47,9 @@ return {
       },
       ]]
         -- by default `extra_patterns` is an empty table: {}.
-        extra_patterns = {},
+        extra_patterns = {
+          { filesize = 5, pattern = "*.xml" },
+        },
       },
       -- fast macro configuration controls disabling and enabling features when
       -- macro is executed
@@ -58,7 +66,7 @@ return {
         -- happen after 300-400 hundred iterations:
         -- `E5108: Error executing lua Vim:E903: Process failed to start: too many open files: "/usr/bin/git"`
         features_disabled = { "lualine" },
-      }
+      },
     },
     -- feature table contains configuration for features faster.nvim will disable
     -- and enable according to rules defined in behaviours.
@@ -119,7 +127,7 @@ return {
       vimopts = {
         on = true,
         defer = false,
-      }
-    }
-  }
+      },
+    },
+  },
 }

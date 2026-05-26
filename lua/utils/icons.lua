@@ -1,25 +1,36 @@
 -- all icons i want to use in different parts of
 -- my neovim config
 local icons = {
-  dashboard = {
-    lazy = "󰒲 ",
-    update = " ",
-    sync = " ",
-    mason = "  ",
-    telescope = "  ",
-    exit = " ",
-    project = " ",
-    mru = " ",
+  -- tier 1 (bookends): bright bg, dark text → vivid accent pills
+  -- tier 2 (outer):    medium-dark bg, colored text → readable, present
+  -- tier 3 (inner):    darkest bg, colored text → fades toward center
+  bubbles = {
+    -- text colors
+    dark_fg = "#24283b", -- dark text for bright bookend bubbles
+    light_fg = "#c0caf5", -- light text for neutral content (filenames, etc.)
+    -- starship accent colors (used for bookend bg + semantic text)
+    red = "#f7768e",
+    orange = "#ff9e64",
+    green = "#9ece6a",
+    cyan_lt = "#b4f9f8",
+    cyan = "#2ac3de",
+    magenta = "#bb9af7",
+    -- tier backgrounds (progressively darker toward center)
+    -- tier 1: uses the accent colors directly (no bg entry needed)
+    tier2_bg = "#292e42", -- medium-dark (bg_highlight from tokyo night storm)
+    tier3_bg = "#1e2030", -- darkest (bg_dark, nearly transparent feel)
   },
   lualine = {
+    bubble_left = "",
+    bubble_right = "",
     left_bar = "▊ ",
     right_bar = " ▊",
     neovim_icon = " ",
-    branch = "",
+    branch = " ",
     add = " ",
     change = " ",
     delete = " ",
-    lsp_icon = "lsp  ",
+    lsp_icon = "󱜙 ",
     error = " ",
     warn = " ",
     hint = " ",
@@ -27,13 +38,7 @@ local icons = {
     select = " ",
     terminal = " ",
     replace = " ",
-    copilot_enabled = " ",
-    copilot_sleep = "󰒲 ",
-    copilot_disabled = " ",
-    copilot_warning = " ",
-    copilot_unknown = " ",
     status_right_arch = "󰣇 ",
-    status_right_pop = " ",
     status_right_mac = " ",
   },
   neotree = {
@@ -50,26 +55,36 @@ local icons = {
       empty_open = " ",
       symlink = " ",
       symlink_open = " ",
-      symlink_arrow = "  ",
+      symlink_arrow = " ",
     },
     file = {
       modified = "󱇨 ",
     },
     git = {
-      unstaged = " ",
-      staged = " ",
-      unmerged = " ",
-      renamed = " ",
-      untracked = " ",
+      unstaged = " ",
+      staged = " ",
+      unmerged = " ",
+      renamed = " ",
+      untracked = " ",
       deleted = " ",
-      ignored = " ",
-      conflict = "裂",
+      ignored = " ",
+      conflict = " ",
     },
   },
+  dashboard = {
+    lazy = "󰒲 ",
+    update = " ",
+    sync = "󱍸 ",
+    mason = "󰰐 ",
+    telescope = " ",
+    exit = " ",
+    project = " ",
+    mru = " ",
+  },
   mason = {
-    installed = " ",
-    pending = " ",
-    uninstalled = " ",
+    installed = "󰄳 ",
+    pending = "󱍸 ",
+    uninstalled = "󱑤 ",
   },
   gitblame = {
     author = " ",
