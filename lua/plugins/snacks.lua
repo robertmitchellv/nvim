@@ -1,3 +1,20 @@
+-- the bottom slot holds either the shell or claude, never both--each toggle hides
+-- the other first (claude's side is in claudecode.lua)
+-- * claude is hidden with `simple_toggle`, never `close()`; `close()` stops the
+--   process and ends the conversation
+local function hide_claude()
+  local ok, claude = pcall(require, "claudecode.terminal")
+  local buf = ok and claude.get_active_terminal_bufnr()
+  if buf and vim.fn.bufwinid(buf) ~= -1 then
+    claude.simple_toggle()
+  end
+end
+
+local function toggle_shell()
+  hide_claude()
+  Snacks.terminal()
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -11,16 +28,15 @@ return {
       scroll = { enabled = false },
     },
     keys = {
-      -- use a custom keymap in the vein of: toggle terminal
+      -- LazyVim's own `<c-/>`, but toggling the cwd terminal and clearing claude
+      -- out of the slot first; a ctrl chord works from inside the terminal, where
+      -- `<leader>` would just type a space
+      -- NOTE: some terminals send `<c-_>` for ctrl-/
+      { "<c-/>", toggle_shell, mode = { "n", "t" }, desc = "Toggle Terminal" },
+      { "<c-_>", toggle_shell, mode = { "n", "t" }, desc = "which_key_ignore" },
+      -- next to LazyVim's `<leader>ft` / `<leader>fT`, its other terminal launchers
       {
-        "<leader>tt",
-        function()
-          Snacks.terminal()
-        end,
-        desc = "Toggle Terminal",
-      },
-      {
-        "<leader>td",
+        "<leader>fd",
         function()
           Snacks.terminal("lazydocker")
         end,

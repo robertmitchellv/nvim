@@ -19,8 +19,16 @@ require("lazy").setup({
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
 
+    -- ai extras
+    -- -> claude in a bottom terminal that sees my buffers and sends diffs back
+    { import = "lazyvim.plugins.extras.ai.claudecode" },
+
     -- coding extras
     { import = "lazyvim.plugins.extras.coding.mini-surround" },
+
+    -- dap extras
+    -- -> breakpoints and live state instead of `pytest --pdb`; python adapter in plugins/dap.lua
+    { import = "lazyvim.plugins.extras.dap.core" },
 
     -- editor extras
     { import = "lazyvim.plugins.extras.editor.mini-diff" },
@@ -39,6 +47,10 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.toml" },
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.yaml" },
+
+    -- test extras
+    -- -> trying neotest out; pytest adapter and key changes in plugins/neotest.lua
+    { import = "lazyvim.plugins.extras.test.core" },
 
     -- ui extras
     { import = "lazyvim.plugins.extras.ui.mini-animate" },
