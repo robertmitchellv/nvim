@@ -26,8 +26,13 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+      -- tiny-inline-diagnostic renders these instead
+      diagnostics = { virtual_text = false },
       servers = {
         -- for a more feature rich pyright experience
+        -- NOTE: a project's `[tool.basedpyright]` or `pyrightconfig.json` replaces
+        -- these settings wholesale--and options like `strictListInference` or
+        -- `pythonVersion` can _only_ be set there, not from the editor
         basedpyright = {
           settings = {
             basedpyright = {
@@ -50,6 +55,8 @@ return {
                 diagnosticMode = "openFilesOnly",
 
                 -- error customization
+                -- NOTE: every `report*` rule goes in here--basedpyright ignores
+                -- them anywhere else in `analysis`
                 diagnosticSeverityOverrides = {
                   -- customize specific message severities:
                   -- "none" - disable message
@@ -73,6 +80,13 @@ return {
                   reportUnusedVariable = "none",
                   reportUnusedImport = "none",
 
+                  -- type checking customization
+                  reportMissingImports = false,
+                  -- -> often turned off due to many missing stubs
+                  reportMissingTypeStubs = false,
+                  -- -> can be noisy with dynamic code
+                  reportUntypedFunctionDecorator = false,
+
                   -- basedpyright exclusive settings
                   -- -> hint about implicit Any types
                   reportAny = "none",
@@ -81,29 +95,13 @@ return {
                   reportUnreachable = "none",
                 },
 
-                -- common settings
-                -- -> stricter typing for lists
-                strictListInference = true,
-                -- -> stricter typing for dicts
-                strictDictionaryInference = true,
-                -- -> stricter typing for sets
-                strictSetInference = true,
-                strictGenericNarrowing = true,
-
-                -- what to ignore
+                -- what to ignore--silences **all** diagnostics for these paths
                 ignore = {
                   -- ignore specific files/directories
                   -- -> ignore test directories
                   "**/tests/**",
                   "**/__pycache__/**",
                 },
-
-                -- type checking customization
-                reportMissingImports = false,
-                -- -> often turned off due to many missing stubs
-                reportMissingTypeStubs = false,
-                -- -> can be noisy with dynamic code
-                reportUntypedFunctionDecorator = false,
 
                 -- extra features
                 inlayHints = {
@@ -114,18 +112,8 @@ return {
                   -- -> show variable types
                   variableTypes = true,
                   genericTypes = false,
-
-                  -- experimental
-                  -- -> for python >= 3.9
-                  deprecateTypingAliases = true,
                 },
               },
-            },
-          },
-          init_options = {
-            python = {
-              pythonVersion = "3.13",
-              pythonPlatform = "Linux",
             },
           },
         },
@@ -140,25 +128,20 @@ return {
       },
       setup = {
         ruff = function()
-          require("lazyvim.util").lsp.on_attach(function(client, _)
-            if client.name == "ruff" then
-              client.server_capabilities.hoverProvider = false
-            end
-          end, "ruff")
+          Snacks.util.lsp.on({ name = "ruff" }, function(_, client)
+            client.server_capabilities.hoverProvider = false
+          end)
         end,
       },
     },
   },
+  -- no `format_on_save` here--LazyVim owns format-on-save (toggle with `<leader>uf`)
+  -- and strips that option with a warning
   {
     "stevearc/conform.nvim",
     opts = {
       formatters_by_ft = {
         python = { "ruff_fix", "ruff_format" },
-      },
-      format_on_save = {
-        lsp_fallback = true,
-        async = false,
-        timeout_ms = 500,
       },
     },
   },
@@ -167,9 +150,5 @@ return {
     event = "VeryLazy",
     priority = 1000,
     opts = {},
-  },
-  {
-    "neovim/nvim-lspconfig",
-    opts = { diagnostics = { virtual_text = false } },
   },
 }

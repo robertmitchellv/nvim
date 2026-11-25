@@ -6,7 +6,6 @@ local icons = require("utils.icons")
 return {
   "nvimdev/dashboard-nvim",
   event = "VimEnter",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
   config = function()
     require("dashboard").setup({
       theme = "hyper",
@@ -30,7 +29,9 @@ return {
           },
           {
             desc = icons.dashboard.telescope .. "find file",
-            action = "Telescope find_files",
+            action = function()
+              Snacks.picker.files()
+            end,
             key = "f",
           },
           {

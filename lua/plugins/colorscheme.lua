@@ -23,6 +23,13 @@ return {
       on_highlights = function(hl, c)
         hl.StatusLine = { bg = "NONE" }
         hl.StatusLineNC = { bg = "NONE" }
+
+        -- spelling squiggles in the storm palette's bright variants--tokyonight's
+        -- defaults are too dim to spot at a glance
+        hl.SpellBad = { undercurl = true, sp = "#ff899d" }
+        hl.SpellCap = { undercurl = true, sp = "#c7a9ff" }
+        hl.SpellRare = { undercurl = true, sp = "#faba4a" }
+        hl.SpellLocal = { undercurl = true, sp = "#a4daff" }
       end,
     },
   },
